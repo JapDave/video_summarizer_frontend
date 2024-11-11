@@ -1,0 +1,33 @@
+@use "../../assets/styles/Variable.scss" as variables;
+.profileCardContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  font-family: variables.$font-family;
+  .profileCard {
+    border: 1px solid lightgray;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+    img {
+      width: 100px;
+    }
+    p {
+      color: blue;
+    }
+
+    button {
+      padding: 10px 15px;
+      border-radius: 5px;
+      background: variables.$buttonColor;
+      color: variables.$whiteColor;
+      border: none;
+    }
+  }
+}

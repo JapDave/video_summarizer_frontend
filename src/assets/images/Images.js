@@ -1,0 +1,27 @@
+import user from "./user.png";
+import thunder from "./thunder.svg";
+import clipboard from "./clipboard.svg";
+import download from "./download.svg";
+import newUserImg from "./newUser.png";
+import profileLogoImg from "./1st.png";
+import aggrement from "./aggrement.png";
+import subscription from "./subscription.png";
+import setting from "./setting.png";
+import logout from "./logout.png";
+import folder from "./mute.png";
+import bell from "./bell.png";
+import youtube from "./youtube.png";
+
+export const UserLogo = user;
+export const thunderIcon = thunder;
+export const downloadIcon = download;
+export const clipboardIcon = clipboard;
+export const newUser = newUserImg;
+export const profileLogo = profileLogoImg;
+export const aggrementImg = aggrement;
+export const subscriptionImg = subscription;
+export const settingImg = setting;
+export const logoutImg = logout;
+export const folderImg = folder;
+export const bellImg = bell;
+export const youtubeImg = youtube;

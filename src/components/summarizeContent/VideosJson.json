@@ -1,0 +1,100 @@
+[
+  {
+    "user_id": 24,
+    "video_name": "videos/24/video_20241021_165124.mp4",
+    "output_video": "./output/24/20241021_165124/output_video.mp4",
+    "video_size": null,
+    "detect_results": {
+      "0": [
+        6,
+        10,
+        11,
+        12,
+        14
+      ],
+      "1": [
+        0,
+        2,
+        3,
+        4,
+        13
+      ],
+      "2": [
+        5,
+        6,
+        7,
+        9,
+        10
+      ],
+      "3": [
+        0,
+        2,
+        17,
+        18,
+        19
+      ]
+    },
+    "summarized_date": "2024-10-21T11:37:45.418805",
+    "is_processing": true,
+    "is_deleted": false,
+    "id": 153,
+    "url": null,
+    "video_length": null,
+    "timestamp": "20241021_165124",
+    "is_summarized": false,
+    "created_on": "2024-10-21T11:21:24.869885"
+  },
+  {
+    "user_id": 24,
+    "video_name": "videos/24/video_24_20241021_165254.mp4",
+    "output_video": "./output/24/20241021_165254/output_video.mp4",
+    "video_size": null,
+    "detect_results": {
+      "0": [
+        0,
+        1,
+        2
+      ],
+      "1": [
+        0,
+        1,
+        2
+      ],
+      "2": [
+        0,
+        1,
+        2
+      ],
+      "3": [
+        0,
+        1,
+        2
+      ]
+    },
+    "summarized_date": "2024-10-21T11:57:04.355539",
+    "is_processing": true,
+    "is_deleted": false,
+    "id": 154,
+    "url": "https://www.youtube.com/watch?v=HRC8J-gVbhA",
+    "video_length": null,
+    "timestamp": "20241021_165254",
+    "is_summarized": true,
+    "created_on": "2024-10-21T11:23:03.729906"
+  },
+  {
+    "user_id": 24,
+    "video_name": "videos/24/video_24_20241021_165312.mp4",
+    "output_video": null,
+    "video_size": null,
+    "detect_results": null,
+    "summarized_date": "2024-10-21T11:57:05.068371",
+    "is_processing": true,
+    "is_deleted": false,
+    "id": 155,
+    "url": "https://www.youtube.com/watch?v=HRC8J-gVbhA",
+    "video_length": null,
+    "timestamp": "20241021_165312",
+    "is_summarized": true,
+    "created_on": "2024-10-21T11:23:19.029065"
+  }
+]

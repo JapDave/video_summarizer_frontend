@@ -1,0 +1,355 @@
+@use "../../assets/styles/Variable.scss" as variables;
+
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: variables.$font-family;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.header {
+  margin-top: 70px;
+  background-color: variables.$whiteColor;
+  padding: 5rem 2rem;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &__content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  &__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: variables.$primaryColor;
+    margin-bottom: 1rem;
+  }
+
+  &__subtitle {
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 2rem;
+  }
+
+  &__input-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+
+    @media (min-width: 600px) {
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+    }
+
+    & > .header__input {
+      padding: 0.75rem 1rem;
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+
+      &:focus {
+        outline: none;
+        border-color: variables.$primaryColor;
+        box-shadow: 0 0 5px rgba(variables.$primaryColor, 0.5);
+      }
+    }
+
+    & > .header__button {
+      padding: 0.75rem 1.5rem;
+      background-color: variables.$buttonColor;
+      color: variables.$whiteColor;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+  }
+
+  &__or {
+    margin: 1rem 0;
+    font-weight: 600;
+    color: #666;
+  }
+
+  &__file-upload-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+
+    &.dragging .header__custom-file-upload {
+      background-color: #e0ffe0;
+      border-color: variables.$primaryColor;
+    }
+
+    & > input[type="file"] {
+      display: none;
+    }
+
+    & > .header__custom-file-upload {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 200px;
+      background-color: #f0f0f0;
+      border: 2px dashed #ccc;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      padding: 1rem;
+      text-align: center;
+
+      span {
+        font-size: 1rem;
+        color: #666;
+      }
+
+      .header__file-name {
+        font-size: 1rem;
+        color: #333;
+      }
+    }
+  }
+
+  &__latest {
+    margin-top: 1.5rem;
+    font-size: 1rem;
+    color: #666;
+
+    em {
+      color: variables.$primaryColor;
+      font-style: normal;
+    }
+  }
+}
+
+.upload-detail {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem 2rem;
+  background-color: variables.$whiteColor;
+
+  &__card {
+    flex: 1;
+    min-width: 250px;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    & > .upload-detail__icon {
+      width: 50px;
+      margin-bottom: 1rem;
+    }
+
+    & > p {
+      font-size: 1rem;
+      color: #555;
+      font-weight: 500;
+    }
+  }
+}
+
+.video-summarized {
+  padding: 4rem 2rem;
+  background-color: #f0f8ff;
+  text-align: center;
+
+  &__content {
+    max-width: 800px;
+    margin: 0 auto;
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: variables.$primaryColor;
+      margin-bottom: 1rem;
+
+      // span {
+      //   color: darken(variables.$primaryColor, 10%);
+      // }
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #555;
+    }
+  }
+}
+
+.what-you-get {
+  padding: 4rem 2rem;
+  text-align: center;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: variables.$primaryColor;
+    margin-bottom: 2rem;
+  }
+
+  &__cards {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  &__card {
+    flex: 1;
+    min-width: 250px;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    h3 {
+      font-size: 1.5rem;
+      color: variables.$primaryColor;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+.features {
+  padding: 4rem 2rem;
+  background-color: variables.$whiteColor;
+  text-align: center;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: variables.$primaryColor;
+    margin-bottom: 2rem;
+  }
+
+  &__cards {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  &__card {
+    flex: 1;
+    min-width: 250px;
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    h4 {
+      font-size: 1.3rem;
+      color: variables.$primaryColor;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #555;
+    }
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    }
+  }
+}
+
+.try-it-now {
+  padding: 4rem 2rem;
+  background-color: #f0f8ff;
+  text-align: center;
+  border-radius: 10px;
+  margin: 4rem 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: variables.$primaryColor;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 2rem;
+  }
+
+  &__button {
+    padding: 0.75rem 2rem;
+    background-color: variables.$buttonColor;
+    color: variables.$whiteColor;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    // &:hover {
+    //   // background-color: darken(variables.$buttonColor, 10%);
+    // }
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .upload-detail,
+  .what-you-get__cards,
+  .features__cards {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .header__input-section {
+    flex-direction: column;
+  }
+
+  .header__button {
+    width: 100%;
+  }
+
+  .header__file-upload-container {
+    max-width: 100%;
+  }
+
+  .try-it-now {
+    margin: 2rem 1rem;
+  }
+}
