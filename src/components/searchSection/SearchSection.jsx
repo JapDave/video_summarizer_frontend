@@ -44,7 +44,6 @@ const SearchSection = () => {
       try {
         const response = await authAPI.upLoadedVideo(formData);
         toastRef.current.addToast("Video upoaded successfully!", 3000);
-        navigate("/video-summarize");
         console.log("reee", response);
         // toast.success(response.detail);
       } catch (error) {

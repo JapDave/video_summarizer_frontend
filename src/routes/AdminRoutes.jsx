@@ -5,6 +5,7 @@ import "../app.css";
 import UserList from "../features/admin/UserList";
 import Sidebar from "../components/sidebar/Sidebar";
 import UsageAnalytics from "../features/admin/UsageAnalytics";
+import PlanAndSubscription from "../features/admin/PlanAndSubscription";
 
 const AdminRoutes = () => {
   const isAdmin = useSelector((state) => state.admin.isAdmin);
@@ -16,6 +17,10 @@ const AdminRoutes = () => {
         <Routes>
           <Route path="usage-analytics" element={<UsageAnalytics />} />
           <Route path="user-list" element={<UserList />} />
+          <Route
+            path="plan-and-subscriptions"
+            element={<PlanAndSubscription />}
+          />
         </Routes>
       </div>
     </div>

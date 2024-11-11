@@ -15,7 +15,6 @@ const LoginForm = () => {
   const navigate = useNavigate(); // Initialize the hook for navigation
   const [loader, setLoader] = useState(false);
   const [isCaptchaValid, setCaptchaValid] = useState(false);
-  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
   const {
     register,
@@ -44,7 +43,7 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     let reqData = {
-      fcm_token: localStorage.getItem("ct") || "",
+      fcm_token: localStorage.getItem("ct"),
       google_signed: false,
       email: data.emailId,
       password: data.password,
@@ -65,10 +64,6 @@ const LoginForm = () => {
 
   const onCaptchaHandler = (value) => {
     setCaptchaValid(!!value);
-  };
-
-  const handleTermsCheckbox = (e) => {
-    setIsTermsAccepted(e.target.checked);
   };
 
   const handleGoogleFailure = (error) => {
@@ -136,33 +131,10 @@ const LoginForm = () => {
               className="recaptcha-container"
               size="normal"
             />
-            <div className="terms-checkbox">
-              <input
-                type="checkbox"
-                id="termsCheckbox"
-                onChange={handleTermsCheckbox}
-              />
-              <label htmlFor="termsCheckbox">
-                I accept the{" "}
-                <a href="/terms-conditions" target="_blank" rel="noopener noreferrer">
-                  Terms & Conditions
-                </a>{" "}
-                and{" "}
-                <a
-                  href="/privacy"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Privacy Policy
-                </a>
-              </label>
-            </div>
             <button
               type="submit"
-              className={
-                isCaptchaValid && isTermsAccepted ? "login-btn" : "disabled-btn"
-              }
-              disabled={!isCaptchaValid && isTermsAccepted}
+              className={isCaptchaValid ? "login-btn" : "disabled-btn"}
+              disabled={!isCaptchaValid}
             >
               Sign In
             </button>

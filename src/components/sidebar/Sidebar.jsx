@@ -109,20 +109,56 @@ const Sidebar = () => {
               )}
             </a>
           </li>
+
+          {/* Plan & Subscription */}
+          <li
+            className={`relative cursor-pointer ${
+              isSidebarOpen ? "px-4" : "px-0 flex justify-center items-center"
+            } py-2 flex items-center ${
+              uri === "/admin/plan-and-subscriptions"
+                ? "bg-[#051b8d] text-white rounded-md"
+                : "text-[#ccc]"
+            }`}
+          >
+            <a
+              href="/admin/plan-and-subscriptions"
+              className={`desktop:py-[7px] smallPc:py-[4px] flex items-center justify-start ${
+                isSidebarOpen ? "gap-4" : "gap-0"
+              } py-1 font-semibold`}
+            >
+              <MdSubscriptions
+                size={15}
+                color={
+                  uri === "/admin/plan-and-subscriptions" ? "#fff" : "#ccc"
+                }
+              />
+              {isSidebarOpen && (
+                <span
+                  className={`text-sm ${
+                    uri === "/admin/plan-and-subscriptions"
+                      ? "text-white"
+                      : "text-[#ccc]"
+                  }`}
+                >
+                  Plan & Subscription
+                </span>
+              )}
+            </a>
+          </li>
         </ul>
 
         {/* Logout */}
-        {/* <ul>
+        <ul>
           <li
-            className={`relative cursor-pointer ${
+            className={`relative w-full cursor-pointer ${
               isSidebarOpen ? "px-4" : "px-0 flex justify-center items-center"
             } py-2 flex items-center ${
               uri === "/dashboard" && "bg-[#051b8d] text-white"
             }`}
           >
             <div
-              onClick={() => navigate(-1)}
-              className={`desktop:py-[7px] smallPc:py-[4px] flex items-center justify-start ${
+              onClick={() => navigate('/')}
+              className={`desktop:py-[7px] smallPc:py-[4px] w-full flex items-center justify-start ${
                 isSidebarOpen ? "gap-4" : "gap-0"
               } py-1 rounded-md border-2 border-[#fff] text-[#fff] px-4 py-3 font-semibold`}
             >
@@ -132,7 +168,7 @@ const Sidebar = () => {
               )}
             </div>
           </li>
-        </ul> */}
+        </ul>
       </div>
     </div>
   );

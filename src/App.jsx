@@ -19,6 +19,7 @@ import TermsAndConditions from "./features/termsPolicy/TermsAndConditions";
 import Privacy from "./features/privacyPolicy/Privacy";
 import AdminRoutes from "./routes/AdminRoutes";
 import { setUserData } from "./redux/slices/adminSlice";
+import { API_BASE_URL } from "./utils/ENVImport";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -27,17 +28,14 @@ const App = () => {
 
   const getLoggedInUser = async () => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/v1/users/me`,
-        {
-          method: "GET",
-          headers: {
-            Token: `${token}`,
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "69420",
-          },
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+        method: "GET",
+        headers: {
+          Token: `${token}`,
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420",
+        },
+      });
 
       if (response.ok) {
         const data = await response.json();

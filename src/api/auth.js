@@ -1,11 +1,12 @@
 // src/api/auth.js
 import axiosInstance from "./axios";
-import axios from "./axios"; // Import the Axios instance
+import axios from "./axios";
+import { API_BASE_URL } from "../utils/ENVImport";
 
 export const login = async (data) => {
   try {
     const response = await axios.post(
-      "http://127.0.0.1:8000/api/v1/users/login",
+      `${API_BASE_URL}/api/v1/users/login`,
       data
     ); // Call your login API endpoint
     return response.data;
@@ -17,7 +18,7 @@ export const login = async (data) => {
 export const signup = async (data) => {
   try {
     const response = await axios.post(
-      "http://127.0.0.1:8000/api/v1/users/signup",
+      `${API_BASE_URL}/api/v1/users/signup`,
       data
     ); // Call your signup API endpoint
     return response.data;
@@ -40,7 +41,7 @@ export const videoSumarize = async () => {
 export const YTVideo = async (data) => {
   try {
     const response = await axiosInstance.post(
-      "http://127.0.0.1:8000/api/v1/summarize-video/yt-video",
+      `${API_BASE_URL}/api/v1/summarize-video/yt-video`,
       data,
       { timeout: 60000 }
     );
@@ -53,7 +54,7 @@ export const YTVideo = async (data) => {
 export const updateUserStatus = async (id, is_blocked) => {
   try {
     const response = await axiosInstance.put(
-      `http://127.0.0.1:8000/api/v1/users/${id}`,
+      `${API_BASE_URL}/api/v1/users/${id}`,
       { is_blocked: is_blocked }
     );
     return response.data;
@@ -77,7 +78,7 @@ export const upLoadedVideo = async (data) => {
     // Make the API request
     const accesstoken = localStorage.getItem("accessToken");
     const response = await axios.post(
-      "http://127.0.0.1:8000/api/v1/summarize-video/video",
+      `${API_BASE_URL}/api/v1/summarize-video/video`,
       data,
       {
         headers: {

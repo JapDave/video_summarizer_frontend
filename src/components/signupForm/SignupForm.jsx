@@ -16,6 +16,7 @@ const SignupForm = () => {
   const navigate = useNavigate();
   const [loader, setLoader] = useState(false);
   const [isCaptchaValid, setCaptchaValid] = useState(false);
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
   const {
     register,
@@ -77,6 +78,11 @@ const SignupForm = () => {
   const handleGoogleFailure = (error) => {
     console.error("Google Login Failed:", error);
   };
+
+  const handleTermsCheckbox = (e) => {
+    setIsTermsAccepted(e.target.checked);
+  };
+
   return (
     <React.Fragment>
       {loader && <CustomLoader />}
@@ -158,10 +164,35 @@ const SignupForm = () => {
               className="recaptcha-container"
               size="normal"
             />
+            <div className="terms-checkbox">
+              <input
+                type="checkbox"
+                id="termsCheckbox"
+                onChange={handleTermsCheckbox}
+              />
+              <label htmlFor="termsCheckbox">
+                I accept the{" "}
+                <a
+                  href="/terms-conditions"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Terms & Conditions
+                </a>{" "}
+                and{" "}
+                <a href="/privacy" target="_blank" rel="noopener noreferrer">
+                  Privacy Policy
+                </a>
+              </label>
+            </div>
             <button
               type="submit"
-              className={isCaptchaValid ? "signup-btn" : "disabled-btn"}
-              disabled={!isCaptchaValid}
+              className={
+                isCaptchaValid && isTermsAccepted
+                  ? "signup-btn"
+                  : "disabled-btn"
+              }
+              disabled={!isCaptchaValid && isTermsAccepted}
             >
               Sign Up
             </button>

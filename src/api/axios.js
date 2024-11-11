@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "https://44cf-103-15-58-118.ngrok-free.app/", // You can use env variables for API URL
+  baseURL: import.meta.env.VITE_API_BASE_URL, // You can use env variables for API URL
   timeout: 10000, // Request timeout after 10 seconds
   headers: {
     "Content-Type": "application/json",

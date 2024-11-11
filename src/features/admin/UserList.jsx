@@ -5,6 +5,7 @@ import { setUserList } from "../../redux/slices/adminSlice";
 import UserListTable from "../../components/admin/UserListTable";
 import { authAPI } from "../../api";
 import ToastContainer from "../../components/customToaster/ToastContainer";
+import { API_BASE_URL } from "../../utils/ENVImport";
 
 const UserList = () => {
   const toastRef = useRef();
@@ -16,7 +17,7 @@ const UserList = () => {
   const getUserListHandler = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/v1/users/get-users`,
+        `${API_BASE_URL}/api/v1/users/get-users`,
         {
           method: "GET",
           headers: {

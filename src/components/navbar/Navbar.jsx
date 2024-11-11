@@ -13,7 +13,8 @@ import {
 } from "../../assets/images/Images";
 import notificationJson from "./Notification.json";
 import { useDispatch, useSelector } from "react-redux";
-import { setIsAdmin } from "../../redux/slices/adminSlice";
+import { setIsAdmin, setUserData } from "../../redux/slices/adminSlice";
+import { API_BASE_URL } from "../../utils/ENVImport";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -33,11 +34,39 @@ const Navbar = () => {
   let intervalId;
   console.log("🚀 ~ Navbar ~ userData:", userData);
 
+  const getLoggedInUser = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
+        method: "GET",
+        headers: {
+          Token: `${token}`,
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "69420",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        dispatch(setUserData(data));
+      } else if (response.status === 401) {
+        console.warn("Unauthorized access. Redirecting to login.");
+        localStorage.clear();
+        location.reload();
+      } else if (response.status === 404) {
+        console.warn("User not found.");
+      } else {
+        console.warn("Failed to fetch user data. Status:", response.status);
+      }
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+  };
+
   const notificationsAPICall = async (isViewed = false) => {
     setIsLoading(true); // Show loader at the start of each API call
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/v1/users/notifications?is_viewed=${isViewed}`,
+        `${API_BASE_URL}/api/v1/users/notifications?is_viewed=${isViewed}`,
         {
           method: "GET",
           headers: {
@@ -50,7 +79,6 @@ const Navbar = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data.count, "COunt")
         setNotificationsResponse(data?.count || 0);
         setNotifications(data?.notifications || []);
       } else {
@@ -67,7 +95,7 @@ const Navbar = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/v1/users/clear-notifications`,
+        `${API_BASE_URL}/api/v1/users/clear-notifications`,
         {
           method: "GET",
           headers: {
@@ -116,9 +144,10 @@ const Navbar = () => {
 
   useEffect(() => {
     if (!token) {
-      navigate("/login");
+      navigate("/");
     } else {
       setIsLoading(true);
+      getLoggedInUser();
       notificationsAPICall();
 
       intervalId = setInterval(() => notificationsAPICall(), 5000);
@@ -197,7 +226,7 @@ const Navbar = () => {
                         <img src={bellImg} />
                       </span>
                       <div className="notification-badge">
-                        {notificationsResponse ?? 0}
+                        {notificationsResponse?.count ?? 0}
                       </div>
                     </div>
 
@@ -281,16 +310,18 @@ const Navbar = () => {
                           </li>
                         </ul> */}
                         {/* {userData?.is_superuser && ( */}
-                        <div
-                          onClick={() => {
-                            dispatch(setIsAdmin(true));
-                            navigate("/admin/usage-analytics");
-                          }}
-                          className="profile-menu-item"
-                        >
-                          <img src={profileLogo} alt="" />
-                          <span className="item-text">Admin</span>
-                        </div>
+                        {userData?.is_superuser && (
+                          <div
+                            onClick={() => {
+                              dispatch(setIsAdmin(true));
+                              navigate("/admin/usage-analytics");
+                            }}
+                            className="profile-menu-item"
+                          >
+                            <img src={profileLogo} alt="" />
+                            <span className="item-text">Admin</span>
+                          </div>
+                        )}
                         {/* )} */}
                         <div className="profile-menu-item">
                           <img src={subscriptionImg} alt="" />
