@@ -63,7 +63,7 @@ const Navbar = () => {
   };
 
   const notificationsAPICall = async (isViewed = false) => {
-    setIsLoading(true); // Show loader at the start of each API call
+    setIsLoading(true);
     try {
       const response = await fetch(
         `${API_BASE_URL}/api/v1/users/notifications?is_viewed=${isViewed}`,
@@ -230,7 +230,6 @@ const Navbar = () => {
                       </div>
                     </div>
 
-                    {/* Dropdown Menu */}
                     {isOpen.notificationFlag && (
                       <div className="dropdown-menu">
                         <div className="dropdown-header">Notifications</div>
