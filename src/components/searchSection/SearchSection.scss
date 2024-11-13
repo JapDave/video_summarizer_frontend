@@ -74,6 +74,12 @@ body {
       cursor: pointer;
       transition: background-color 0.3s ease;
     }
+
+    & > .header__button:disabled {
+      background-color: variables.$buttonColor;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   }
 
   &__or {

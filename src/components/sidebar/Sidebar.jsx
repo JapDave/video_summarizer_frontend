@@ -111,7 +111,7 @@ const Sidebar = () => {
           </li>
 
           {/* Plan & Subscription */}
-          <li
+          {/* <li
             className={`relative cursor-pointer ${
               isSidebarOpen ? "px-4" : "px-0 flex justify-center items-center"
             } py-2 flex items-center ${
@@ -144,7 +144,7 @@ const Sidebar = () => {
                 </span>
               )}
             </a>
-          </li>
+          </li> */}
         </ul>
 
         {/* Logout */}

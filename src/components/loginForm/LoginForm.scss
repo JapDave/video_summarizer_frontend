@@ -92,6 +92,11 @@
             border-color: variables.$buttonColor;
           }
         }
+
+        .error {
+          font-size: 14px;
+          color: red;
+        }
       }
 
       // Options (checkbox + Forgot Password)

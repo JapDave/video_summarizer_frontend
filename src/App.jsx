@@ -20,6 +20,7 @@ import Privacy from "./features/privacyPolicy/Privacy";
 import AdminRoutes from "./routes/AdminRoutes";
 import { setUserData } from "./redux/slices/adminSlice";
 import { API_BASE_URL } from "./utils/ENVImport";
+import PlayerComponent from "./components/summarizeContent/PlayerComponent";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -72,6 +73,7 @@ const App = () => {
           <Route path="/contactus" element={<ContactUsPage />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/video-summarize" element={<SummarizeContent />} />
+          <Route path="/video-summarize-player" element={<PlayerComponent />} />
           <Route path="/terms-conditions" element={<TermsAndConditions />} />
           <Route path="/privacy" element={<Privacy />} />
           {isAdmin ? (

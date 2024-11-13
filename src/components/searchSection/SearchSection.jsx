@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsAdmin } from "../../redux/slices/adminSlice";
 import "./SearchSection.scss";
@@ -20,6 +21,7 @@ const SearchSection = () => {
   const [fileName, setFileName] = useState("");
   const [dragging, setDragging] = useState(false);
   const [loader, setLoader] = useState(false);
+  const [isCaptchaValid, setCaptchaValid] = useState(false);
   const [videoURL, setVideoURL] = useState("");
   const isAdmin = useSelector((state) => state.admin.isAdmin); // Access the isAdmin state
   const dispatch = useDispatch();
@@ -87,6 +89,7 @@ const SearchSection = () => {
   };
 
   const handlePostLink = async () => {
+    if (!isCaptchaValid) return;
     // if (!videoURL.trim()) {
     //   toast.warn("Please enter a YouTube video URL.");
     //   return;
@@ -110,8 +113,8 @@ const SearchSection = () => {
         toastRef.current.addToast(error.response?.data?.detail, 3000);
         const errorMessage =
           error.response?.data?.detail || "Failed to post URL!";
-        setFile(null); // Clear file state in case of an error
-        setFileName(""); // Clear fileName state in case of an error
+        setFile(null);
+        setFileName("");
         setVideoURL("");
         // toast.error(errorMessage);
       } finally {
@@ -120,6 +123,10 @@ const SearchSection = () => {
     } else {
       handleFileChange();
     }
+  };
+
+  const onCaptchaHandler = (value) => {
+    setCaptchaValid(!!value);
   };
 
   return (
@@ -152,10 +159,20 @@ const SearchSection = () => {
               value={videoURL}
               onChange={(e) => setVideoURL(e.target.value)}
             />
-            <button className="header__button" onClick={handlePostLink}>
+            <button
+              className="header__button"
+              onClick={handlePostLink}
+              disabled={!isCaptchaValid}
+            >
               Summarize
             </button>
           </div>
+          <ReCAPTCHA
+            sitekey="6Ld00WsqAAAAAOuiln-bvbtY51x6dgjs2tanbROk"
+            onChange={onCaptchaHandler}
+            className="recaptcha-container"
+            size="normal"
+          />
           <p className="header__or">Or</p>
           <div
             className={`header__file-upload-container ${

@@ -10,6 +10,7 @@ import {
   profileLogo,
   settingImg,
   subscriptionImg,
+  adminLogo,
 } from "../../assets/images/Images";
 import notificationJson from "./Notification.json";
 import { useDispatch, useSelector } from "react-redux";
@@ -243,9 +244,25 @@ const Navbar = () => {
                           <div className="dropdown-content">
                             <div className="notifications">
                               <ul>
-                                {notifications?.map((item) => {
-                                  return <li>{item.message}</li>;
-                                })}
+                                {notifications.map((item, index) => (
+                                  <li key={index}>
+                                    <div className="notification-content">
+                                      <div className="notification-message">
+                                        {item.message}
+                                      </div>
+                                      <div className="notification-details">
+                                        <span className="date">
+                                          {/* {item.date} */}
+                                          2024-11-12
+                                        </span>
+                                        <span className="video-name">
+                                          {/* {item.video_name} */}
+                                          JavaScript Basics
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </li>
+                                ))}
                               </ul>
                             </div>
                             {notifications?.length > 0 && (
@@ -317,11 +334,18 @@ const Navbar = () => {
                             }}
                             className="profile-menu-item"
                           >
-                            <img src={profileLogo} alt="" />
+                            <img src={adminLogo} alt="" />
                             <span className="item-text">Admin</span>
                           </div>
                         )}
                         {/* )} */}
+                        <div
+                          onClick={() => navigate("/profile")}
+                          className="profile-menu-item"
+                        >
+                          <img src={profileLogo} alt="" />
+                          <span className="item-text">Profile</span>
+                        </div>
                         <div className="profile-menu-item">
                           <img src={subscriptionImg} alt="" />
                           <span className="item-text">Subscription</span>

@@ -11,6 +11,7 @@ import logout from "./logout.png";
 import folder from "./mute.png";
 import bell from "./bell.png";
 import youtube from "./youtube.png";
+import admin from "./admin.png";
 
 export const UserLogo = user;
 export const thunderIcon = thunder;
@@ -25,3 +26,4 @@ export const logoutImg = logout;
 export const folderImg = folder;
 export const bellImg = bell;
 export const youtubeImg = youtube;
+export const adminLogo = admin;

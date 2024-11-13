@@ -100,16 +100,45 @@ const LoginForm = () => {
             <div className="form-group">
               <label htmlFor="emailId">Email ID</label>
               <input
-                type="email"
+                type="emailId"
                 id="emailId"
-                {...register("emailId", { required: "Email ID is required" })}
+                {...register("emailId", {
+                  required: "Email ID is required",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Invalid emailId format",
+                  },
+                })}
                 placeholder="Email ID"
               />
               {errors.emailId && (
                 <span className="error">{errors.emailId.message}</span>
               )}
             </div>
-
+            {/* <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters long",
+                  },
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must contain uppercase, lowercase, number, and special character",
+                  },
+                })}
+                placeholder="Password"
+              />
+              {errors.password && (
+                <span className="error">{errors.password.message}</span>
+              )}
+            </div> */}
             <div className="form-group">
               <label htmlFor="password">Password</label>
               <input

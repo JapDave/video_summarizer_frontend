@@ -39,10 +39,17 @@ const SummarizeContent = () => {
   useEffect(() => {
     if (!token) {
       navigate("/");
-    } else {
-      videoSummarizedAPICAll();
+      return;
     }
-  }, []);
+
+    videoSummarizedAPICAll();
+
+    const interval = setInterval(() => {
+      videoSummarizedAPICAll();
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [token, navigate]);
 
   const trimFileName = (filePath) => {
     return filePath ? filePath.split("/").pop() : "Unknown File";
@@ -76,6 +83,10 @@ const SummarizeContent = () => {
                 title={trimFileName(card.video_name)}
                 videoUrl={constructDownloadUrl(card.output_video)}
                 summarizedStatus={card.is_summarized}
+                expireDate="12/10/2024"
+                size="50"
+                duration="11"
+                createdDate="11/10/2024"
               />
             ))}
           </div>

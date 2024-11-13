@@ -131,7 +131,13 @@ const SignupForm = () => {
               <input
                 type="email"
                 id="email"
-                {...register("email", { required: "Email ID is required" })}
+                {...register("email", {
+                  required: "Email ID is required",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Invalid email format",
+                  },
+                })}
                 placeholder="Email ID"
               />
               {errors.email && (
@@ -144,7 +150,19 @@ const SignupForm = () => {
               <input
                 type="password"
                 id="password"
-                {...register("password", { required: "Password is required" })}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters long",
+                  },
+                  pattern: {
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    message:
+                      "Password must contain uppercase, lowercase, number, and special character",
+                  },
+                })}
                 placeholder="Password"
               />
               {errors.password && (

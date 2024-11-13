@@ -226,35 +226,82 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        width: 100%;
+        max-width: 450px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
         ul {
           list-style-type: none;
+          width: 100%;
           margin: 0;
           padding: 0;
 
           li {
-            padding: 10px;
-            font-size: 14px;
-            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            font-size: 15px;
+            border-bottom: 1px solid #e0e0e0;
             cursor: pointer;
+            transition: background-color 0.3s ease;
 
             &:hover {
-              background-color: #f0f0f0;
+              background-color: #f9f9f9;
             }
 
             &:last-child {
               border-bottom: none;
             }
+
+            img {
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              object-fit: cover;
+              margin-right: 15px;
+              border: 1px solid #ddd;
+            }
+
+            .notification-content {
+              display: flex;
+              flex-direction: column;
+
+              .notification-message {
+                font-size: 16px;
+                font-weight: 600;
+                color: #333333;
+                margin-bottom: 5px;
+                text-align: left;
+              }
+
+              .notification-details {
+                display: flex;
+                justify-content: space-between;
+                font-size: 13px;
+                color: #777777;
+
+                .video-name {
+                  font-weight: 500;
+                  color: #051b8d;
+                  margin-right: 8px;
+                }
+
+                .date {
+                  color: #999999;
+                }
+              }
+            }
           }
         }
-        img {
-          width: 60px;
-          margin-bottom: 10px;
-        }
+
         p {
           font-size: 14px;
-          color: #555;
+          color: #666666;
+          margin-top: 10px;
         }
       }
     }
