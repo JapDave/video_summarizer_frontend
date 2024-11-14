@@ -67,20 +67,21 @@ const SummarizeContent = () => {
 
   const startIndex = (currentPage - 1) * pageSize;
   const currentVideos = videos.slice(startIndex, startIndex + pageSize);
+  console.log("🚀 ~ SummarizeContent ~ currentVideos:", currentVideos);
 
   return (
     <React.Fragment>
       <div className="page-container">
         <Navbar />
         <div className="video-card-container">
-          {currentVideos && currentVideos === 0 && (
+          {currentVideos.length === 0 && (
             <Empty description="Videos not found" />
           )}
           <div className="cards-wrapper">
             {currentVideos.map((card, index) => (
               <CardComponent
                 key={index}
-                title={trimFileName(card.video_name)}
+                title={trimFileName(card.display_name)}
                 videoUrl={constructDownloadUrl(card.output_video)}
                 summarizedStatus={card.is_summarized}
                 expireDate="12/10/2024"

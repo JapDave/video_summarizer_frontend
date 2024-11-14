@@ -32,7 +32,7 @@ export const requestPermission = async () => {
   //     console.log("Notification permission granted.");
 
       return getToken(messaging, {
-        vapidKey: VAPIDKEY,
+        vapidKey: 'BO8A1AbDcKY3tU_qdepRny2EcpvsYWI6XMOd-llS6B-K4eLnl4TdAm4qkRzrmti7AzdnDwv_yhousDBye5_ZVt4',
       })
         .then((currentToken) => {
           if (currentToken) {

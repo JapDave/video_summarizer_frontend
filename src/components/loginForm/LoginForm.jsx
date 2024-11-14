@@ -115,7 +115,7 @@ const LoginForm = () => {
                 <span className="error">{errors.emailId.message}</span>
               )}
             </div>
-            {/* <div className="form-group">
+            <div className="form-group">
               <label htmlFor="password">Password</label>
               <input
                 type="password"
@@ -138,21 +138,6 @@ const LoginForm = () => {
               {errors.password && (
                 <span className="error">{errors.password.message}</span>
               )}
-            </div> */}
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                {...register("password", { required: "Password is required" })}
-                placeholder="Password"
-              />
-              {errors.password && (
-                <span className="error">{errors.password.message}</span>
-              )}
-            </div>
-            <div className="form-options">
-              <a href="/forgot-password">Forgot Password?</a>
             </div>
             <ReCAPTCHA
               sitekey="6Ld00WsqAAAAAOuiln-bvbtY51x6dgjs2tanbROk"

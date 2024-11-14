@@ -64,16 +64,6 @@ export const updateUserStatus = async (id, is_blocked) => {
 };
 
 export const upLoadedVideo = async (data) => {
-  // try {
-  //   const response = await axiosInstance.post(
-  //     "/api/v1/summarize/video/video",
-  //     data
-  //   );
-  //   return response.data;
-  // } catch (error) {
-  //   throw error;
-  // }
-
   try {
     // Make the API request
     const accesstoken = localStorage.getItem("accessToken");
@@ -91,5 +81,28 @@ export const upLoadedVideo = async (data) => {
     console.log("File uploaded successfully:", response.data);
   } catch (error) {
     console.error("Error uploading file:", error);
+  }
+};
+
+export const uploadProfile = async (data, firstName, lastName) => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+
+    const url = `${API_BASE_URL}/api/v1/users/update-profile?first_name=${encodeURIComponent(
+      firstName
+    )}&last_name=${encodeURIComponent(lastName)}`;
+
+    const response = await axios.post(url, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        token: `${accessToken}`,
+      },
+    });
+
+    console.log("Profile image uploaded successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error uploading profile image:", error);
+    throw error;
   }
 };

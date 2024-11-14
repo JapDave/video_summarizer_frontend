@@ -37,27 +37,27 @@ const CardComponent = ({
           {size} MB
         </span>
       </div>
-
       {/* Video Title and Icon */}
       <div className="flex flex-col items-center mb-6">
         <img
           src={mp4Icon}
           alt="MP4 icon"
-          className="w-24 h-24 mb-4 object-cover rounded-full border border-gray-200 shadow-md"
+          className="w-16 h-16 mb-4 object-cover rounded-full border border-gray-200 shadow-md"
         />
         <h3 className="text-xl font-semibold text-gray-900 text-center mb-2">
           {truncateTitle(title, 20)}
         </h3>
       </div>
 
+
       {/* Dates: Created At and Expired At */}
-      <div className="flex flex-col justify-start items-start mb-6">
-        <div className="flex justify-between items-center w-full mb-2">
-          <p className="text-xs text-gray-500 font-medium">Created At</p>
+      <div className="flex justify-between items-start mb-6">
+        <div className="flex justify-between items-start flex-col w-full mb-2">
+          <p className="text-xs text-gray-900 font-medium">Created At</p>
           <span className="text-xs text-gray-600">{createdDate}</span>
         </div>
-        <div className="flex justify-between items-center w-full">
-          <p className="text-xs text-gray-500 font-medium">Expires On</p>
+        <div className="flex justify-between items-end flex-col w-full">
+          <p className="text-xs text-gray-900 font-medium">Expires On</p>
           <span className="text-xs text-gray-600">{expireDate}</span>
         </div>
       </div>

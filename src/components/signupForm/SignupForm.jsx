@@ -174,7 +174,6 @@ const SignupForm = () => {
                 <input type="checkbox" />
                 Remember me
               </label>
-              <a href="/forgot-password">Forgot Password?</a>
             </div>
             <ReCAPTCHA
               sitekey="6Ld00WsqAAAAAOuiln-bvbtY51x6dgjs2tanbROk"
