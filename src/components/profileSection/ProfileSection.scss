@@ -2,7 +2,7 @@
 
 .profile-form-container {
   width: 100%;
-  max-width: 600px;
+  max-width: 400px;
   margin: 0 auto;
   padding: 20px;
   text-align: center;
@@ -115,6 +115,7 @@
     }
 
     .submit-btn {
+      width: 100%;
       background-color: #007bff;
       color: white;
       padding: 12px 20px;

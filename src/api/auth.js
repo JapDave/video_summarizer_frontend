@@ -106,3 +106,36 @@ export const uploadProfile = async (data, firstName, lastName) => {
     throw error;
   }
 };
+
+export const deleteVideo = async (id) => {
+  try {
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      throw new Error("Access token is missing. Please log in again.");
+    }
+
+    // Make the API request
+    const response = await axios.delete(
+      `${API_BASE_URL}/api/v1/summarize-video/delete-video/${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          token: accessToken,
+        },
+      }
+    );
+
+    console.log("Video deleted successfully:", response.data);
+
+    // Return the response to the caller
+    return response;
+  } catch (error) {
+    console.error(
+      "Error in deleting video:",
+      error.response?.data || error.message
+    );
+    // Throw error to be handled by the caller
+    throw error;
+  }
+};

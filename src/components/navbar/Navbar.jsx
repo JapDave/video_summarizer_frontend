@@ -143,6 +143,11 @@ const Navbar = () => {
     location.reload();
   };
 
+  const convertDateFormat = (dateTimeString) => {
+    const [datePart] = dateTimeString.split("T");
+    return datePart;
+  };
+
   useEffect(() => {
     if (!token) {
       navigate("/");
@@ -252,12 +257,10 @@ const Navbar = () => {
                                       </div>
                                       <div className="notification-details">
                                         <span className="date">
-                                          {/* {item.date} */}
-                                          2024-11-12
+                                          {convertDateFormat(item.created_on)}
                                         </span>
                                         <span className="video-name">
-                                          {/* {item.video_name} */}
-                                          JavaScript Basics
+                                          {item.video_title}
                                         </span>
                                       </div>
                                     </div>
