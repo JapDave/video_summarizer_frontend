@@ -87,8 +87,8 @@ const SignupForm = () => {
     <React.Fragment>
       {loader && <TextLoader />}
       <ToastContainer ref={toastRef} />
-      <div className="signup-page">
-        <div className="signup-container">
+      <div className="signup-page border w-full overflow-y-scroll pt-10 pb-10">
+        <div className="signup-container border-2">
           <h2>Sign In</h2>
           <GoogleLoginButton
             onSuccess={handleGoogleSuccess}
@@ -169,12 +169,6 @@ const SignupForm = () => {
                 <span className="error">{errors.password.message}</span>
               )}
             </div>
-            {/* <div className="form-options">
-              <label>
-                <input type="checkbox" />
-                Remember me
-              </label>
-            </div> */}
             <ReCAPTCHA
               sitekey="6Ld00WsqAAAAAOuiln-bvbtY51x6dgjs2tanbROk"
               onChange={onCaptchaHandler}

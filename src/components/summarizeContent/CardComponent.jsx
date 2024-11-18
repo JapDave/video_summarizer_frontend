@@ -6,12 +6,14 @@ import { useNavigate } from "react-router-dom";
 
 const CardComponent = ({
   title,
+  id,
   videoUrl,
   summarizedStatus,
   expireDate,
   size,
   duration,
   createdDate,
+  onDelete,
 }) => {
   const navigate = useNavigate();
 
@@ -49,7 +51,6 @@ const CardComponent = ({
         </h3>
       </div>
 
-
       {/* Dates: Created At and Expired At */}
       <div className="flex justify-between items-start mb-6">
         <div className="flex justify-between items-start flex-col w-full mb-2">
@@ -79,7 +80,7 @@ const CardComponent = ({
         {summarizedStatus && (
           <button
             className="w-full py-2 rounded-md font-semibold text-white shadow-lg transition bg-red-500 hover:bg-red-600"
-            onClick={() => {}}
+            onClick={() => onDelete()}
           >
             Delete
           </button>

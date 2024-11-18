@@ -51,6 +51,7 @@ const ProfileSection = () => {
       if (response.ok) {
         const data = await response.json();
         dispatch(setUserData(data));
+
         setImagePreview(
           data.image ? constructDownloadUrl(data.image) : UserLogo
         );
@@ -70,7 +71,6 @@ const ProfileSection = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const imageToUpload =
       profileImage ||
       (await fetch(UserLogo)
@@ -90,9 +90,14 @@ const ProfileSection = () => {
         formData.last_name
       );
       toastRef.current.addToast("Profile updated successfully!", 3000);
-      getLoggedInUser();
+
+      const uploadedImageUrl = URL.createObjectURL(profileImage);
+      setImagePreview(uploadedImageUrl);
+      navigate("/");
+
+      // await getLoggedInUser();
     } catch (error) {
-      alert("Upload failed!");
+      console.log(error);
     } finally {
       setLoading(false);
       setProfileImage(null);
@@ -102,6 +107,7 @@ const ProfileSection = () => {
   const constructDownloadUrl = (outputPath) => {
     if (!outputPath) return "#";
     const trimmedPath = outputPath.replace("./", "");
+    const timestamp = new Date().getTime();
     return `${API_BASE_URL}/${trimmedPath}`;
   };
 
