@@ -8,7 +8,7 @@ import { GoogleLoginButton } from "../loginForm/GoogleLoginButton";
 import { API_BASE_URL } from "../../utils/ENVImport";
 import { authAPI } from "../../api";
 import "react-toastify/dist/ReactToastify.css";
-import CustomLoader from "../customLoader/CustomLoader";
+import TextLoader from "../customLoader/Loader";
 import ToastContainer from "../customToaster/ToastContainer";
 
 const SignupForm = () => {
@@ -85,7 +85,7 @@ const SignupForm = () => {
 
   return (
     <React.Fragment>
-      {loader && <CustomLoader />}
+      {loader && <TextLoader />}
       <ToastContainer ref={toastRef} />
       <div className="signup-page">
         <div className="signup-container">
@@ -169,12 +169,12 @@ const SignupForm = () => {
                 <span className="error">{errors.password.message}</span>
               )}
             </div>
-            <div className="form-options">
+            {/* <div className="form-options">
               <label>
                 <input type="checkbox" />
                 Remember me
               </label>
-            </div>
+            </div> */}
             <ReCAPTCHA
               sitekey="6Ld00WsqAAAAAOuiln-bvbtY51x6dgjs2tanbROk"
               onChange={onCaptchaHandler}

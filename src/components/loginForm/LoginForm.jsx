@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { authAPI } from "../../api";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleLoginButton } from "./GoogleLoginButton";
-import CustomLoader from "../customLoader/CustomLoader";
+import TextLoader from "../customLoader/Loader";
 import ToastContainer from "../customToaster/ToastContainer";
 
 const LoginForm = () => {
@@ -83,7 +83,7 @@ const LoginForm = () => {
         draggable
         pauseOnHover
       /> */}
-      {loader && <CustomLoader />}
+      {loader && <TextLoader />}
       <ToastContainer ref={toastRef} />
       <div className="login-page">
         <div className="login-container">
