@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Tooltip } from "antd";
 import "./Navbar.scss";
 import {
   aggrementImg,
@@ -16,6 +17,7 @@ import notificationJson from "./Notification.json";
 import { useDispatch, useSelector } from "react-redux";
 import { setIsAdmin, setUserData } from "../../redux/slices/adminSlice";
 import { API_BASE_URL } from "../../utils/ENVImport";
+import { truncateTitle } from "../../utils/TruncateString";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -253,14 +255,25 @@ const Navbar = () => {
                                   <li key={index}>
                                     <div className="notification-content">
                                       <div className="notification-message">
-                                        {item.message}
+                                        <Tooltip title={item.message}>
+                                          {item.message !== null
+                                            ? truncateTitle(item.message, 35)
+                                            : null}
+                                        </Tooltip>
                                       </div>
                                       <div className="notification-details">
                                         <span className="date">
                                           {convertDateFormat(item.created_on)}
                                         </span>
                                         <span className="video-name">
-                                          {item.video_title}
+                                          <Tooltip title={item.video_title}>
+                                            {item.video_title !== null
+                                              ? truncateTitle(
+                                                  item.video_title,
+                                                  10
+                                                )
+                                              : null}
+                                          </Tooltip>
                                         </span>
                                       </div>
                                     </div>

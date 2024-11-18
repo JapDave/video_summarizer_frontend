@@ -15,18 +15,46 @@ const ProfileSection = () => {
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.admin);
   const token = localStorage.getItem("accessToken");
+
   const [formData, setFormData] = useState({
     email: "",
     first_name: "",
     last_name: "",
   });
+  const [originalData, setOriginalData] = useState({});
   const [profileImage, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  useEffect(() => {
+    if (userData) {
+      setFormData({
+        email: userData.email || "",
+        first_name: userData.first_name || "",
+        last_name: userData.last_name || "",
+      });
+      setOriginalData({
+        first_name: userData.first_name || "",
+        last_name: userData.last_name || "",
+        image: userData.image || "",
+      });
+      setImagePreview(
+        userData.image ? constructDownloadUrl(userData.image) : UserLogo
+      );
+    }
+  }, [userData]);
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/");
+    } else {
+      getLoggedInUser();
+    }
+  }, [token, navigate]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
@@ -35,6 +63,13 @@ const ProfileSection = () => {
       setProfileImage(file);
       setImagePreview(URL.createObjectURL(file));
     }
+  };
+
+  const constructDownloadUrl = (outputPath) => {
+    if (!outputPath) return "#";
+    const trimmedPath = outputPath.replace("./", "");
+    const timestamp = new Date().getTime();
+    return `${API_BASE_URL}/${trimmedPath}`;
   };
 
   const getLoggedInUser = async () => {
@@ -51,7 +86,6 @@ const ProfileSection = () => {
       if (response.ok) {
         const data = await response.json();
         dispatch(setUserData(data));
-
         setImagePreview(
           data.image ? constructDownloadUrl(data.image) : UserLogo
         );
@@ -71,66 +105,45 @@ const ProfileSection = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const imageToUpload =
-      profileImage ||
-      (await fetch(UserLogo)
-        .then((res) => res.blob())
-        .then(
-          (blob) => new File([blob], "defaultProfile.jpg", { type: blob.type })
-        ));
-
     setLoading(true);
+
+    const updatedFields = {};
+    if (formData.first_name !== originalData.first_name) {
+      updatedFields.first_name = formData.first_name;
+    }
+    if (formData.last_name !== originalData.last_name) {
+      updatedFields.last_name = formData.last_name;
+    }
+
     const formDataToSubmit = new FormData();
-    formDataToSubmit.append("image", imageToUpload);
+    if (profileImage) {
+      formDataToSubmit.append("image", profileImage);
+    }
 
     try {
-      const result = await uploadProfile(
-        formDataToSubmit,
-        formData.first_name,
-        formData.last_name
-      );
-      toastRef.current.addToast("Profile updated successfully!", 3000);
-
-      const uploadedImageUrl = URL.createObjectURL(profileImage);
-      setImagePreview(uploadedImageUrl);
-      navigate("/");
-
-      // await getLoggedInUser();
+      if (Object.keys(updatedFields).length > 0 || profileImage) {
+        const result = await uploadProfile(
+          formDataToSubmit,
+          updatedFields.first_name || "",
+          updatedFields.last_name || ""
+        );
+        toastRef.current.addToast("Profile updated successfully!", 3000);
+        await getLoggedInUser();
+      }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
-      setProfileImage(null);
     }
   };
 
-  const constructDownloadUrl = (outputPath) => {
-    if (!outputPath) return "#";
-    const trimmedPath = outputPath.replace("./", "");
-    const timestamp = new Date().getTime();
-    return `${API_BASE_URL}/${trimmedPath}`;
+  const isButtonDisabled = () => {
+    return (
+      formData.first_name === originalData.first_name &&
+      formData.last_name === originalData.last_name &&
+      !profileImage
+    );
   };
-
-  useEffect(() => {
-    if (userData) {
-      setFormData({
-        email: userData.email || "",
-        first_name: userData.first_name || "",
-        last_name: userData.last_name || "",
-      });
-      setImagePreview(
-        userData.image ? constructDownloadUrl(userData.image) : UserLogo
-      );
-    }
-  }, [userData]);
-
-  useEffect(() => {
-    if (!token) {
-      navigate("/");
-    } else {
-      getLoggedInUser();
-    }
-  }, [token, navigate]);
 
   return (
     <div className="profile-form-container">
@@ -194,7 +207,11 @@ const ProfileSection = () => {
             onChange={handleChange}
           />
         </div>
-        <button type="submit" className="submit-btn" disabled={loading}>
+        <button
+          type="submit"
+          className="submit-btn"
+          disabled={loading || isButtonDisabled()}
+        >
           {loading ? "Updating..." : "Update"}
         </button>
       </form>

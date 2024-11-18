@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import {
   FaPlay,
@@ -8,11 +8,14 @@ import {
   FaVolumeMute,
   FaExpandAlt,
   FaCompressAlt,
+  FaFastForward,
+  FaFastBackward,
 } from "react-icons/fa";
 import Navbar from "../navbar/Navbar";
 import Footer from "../footer/footer";
 import "./PlayerComponent.scss";
 import { useLocation } from "react-router-dom";
+import TextLoader from "../customLoader/Loader";
 
 const PlayerComponent = () => {
   const location = useLocation();
@@ -22,9 +25,13 @@ const PlayerComponent = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showControls, setShowControls] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const SKIP_INTERVAL = 10;
 
   const playerRef = React.useRef<ReactPlayer>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const controlsTimeout = React.useRef<number | null>(null);
 
   const handleDownload = async () => {
     if (!videoUrl || videoUrl === "#") {
@@ -55,6 +62,18 @@ const PlayerComponent = () => {
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
+  };
+
+  const handleForward = () => {
+    const newTime = Math.min(currentTime + SKIP_INTERVAL, duration);
+    setCurrentTime(newTime);
+    playerRef.current?.seekTo(newTime);
+  };
+
+  const handleBackward = () => {
+    const newTime = Math.max(currentTime - SKIP_INTERVAL, 0);
+    setCurrentTime(newTime);
+    playerRef.current?.seekTo(newTime);
   };
 
   const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -96,14 +115,54 @@ const PlayerComponent = () => {
     setIsFullscreen(!isFullscreen);
   };
 
+  const resetControlsTimeout = () => {
+    setShowControls(true);
+    if (controlsTimeout.current) {
+      clearTimeout(controlsTimeout.current);
+    }
+    controlsTimeout.current = window.setTimeout(() => {
+      setShowControls(false);
+    }, 5000);
+  };
+
+  useEffect(() => {
+    if (videoUrl) {
+      setIsLoading(false);
+    }
+  }, [videoUrl]);
+
+  useEffect(() => {
+    resetControlsTimeout();
+    const handleUserActivity = () => resetControlsTimeout();
+    containerRef.current?.addEventListener("mousemove", handleUserActivity);
+    containerRef.current?.addEventListener("touchstart", handleUserActivity);
+
+    return () => {
+      if (controlsTimeout.current) {
+        clearTimeout(controlsTimeout.current);
+      }
+      containerRef.current?.removeEventListener(
+        "mousemove",
+        handleUserActivity
+      );
+      containerRef.current?.removeEventListener(
+        "touchstart",
+        handleUserActivity
+      );
+    };
+  }, []);
+
   return (
     <React.Fragment>
+      {isLoading && <TextLoader />}
       <div className="page-container">
         <Navbar />
         <div className="player-container relative" ref={containerRef}>
           <button
             onClick={toggleFullscreen}
-            className="fullscreen-btn bg-[#f4f4f4] absolute top-10 right-10 z-10 p-2"
+            className={`fullscreen-btn ${
+              showControls ? "visible" : "hidden"
+            } bg-[#f4f4f4] absolute top-10 right-10 z-10 p-2`}
             aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
           >
             {isFullscreen ? (
@@ -124,15 +183,37 @@ const PlayerComponent = () => {
               onProgress={handleProgress}
               onDuration={(duration) => setDuration(duration)}
             />
-            <div className="video-controls">
+            <div
+              className={`video-controls ${
+                showControls ? "visible" : "hidden"
+              }`}
+            >
               <div className="flex justify-between w-full items-center">
-                <button
-                  onClick={handlePlayPause}
-                  className="play-pause-btn"
-                  aria-label="Play/Pause"
-                >
-                  {isPlaying ? <FaPause /> : <FaPlay />}
-                </button>
+                <div className="flex items-center">
+                  <button
+                    onClick={handleBackward}
+                    className="skip-back-btn text-[12px] flex items-center gap-2"
+                    aria-label="Backward"
+                  >
+                    <FaFastBackward />
+                    {SKIP_INTERVAL}s
+                  </button>
+                  <button
+                    onClick={handlePlayPause}
+                    className="play-pause-btn"
+                    aria-label="Play/Pause"
+                  >
+                    {isPlaying ? <FaPause /> : <FaPlay />}
+                  </button>
+                  <button
+                    onClick={handleForward}
+                    className="skip-forward-btn text-[12px] flex items-center gap-2"
+                    aria-label="Forward"
+                  >
+                    {SKIP_INTERVAL}s
+                    <FaFastForward />
+                  </button>
+                </div>
                 <div className="volume-container">
                   <button className="volume-btn" aria-label="Volume">
                     {getVolumeIcon()}
@@ -149,7 +230,6 @@ const PlayerComponent = () => {
                   />
                 </div>
               </div>
-              {/* Video Progress Bar */}
               <div className="progress-container">
                 <input
                   type="range"
