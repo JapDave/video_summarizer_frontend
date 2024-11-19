@@ -138,8 +138,8 @@ const SummarizeContent = () => {
                   videoUrl={constructDownloadUrl(card.output_video)}
                   summarizedStatus={card.is_summarized}
                   expireDate={expiryDate}
-                  size={card.video_input_size}
-                  duration={card.video_input_length}
+                  size={card.video_output_size}
+                  duration={card.video_output_length}
                   createdDate={convertDateFormat(createdDate)}
                   onDelete={() => deleteVideoHandler(card.id)}
                 />

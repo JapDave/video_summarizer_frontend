@@ -51,7 +51,7 @@ const SignupForm = () => {
       first_name: data.firstname,
       last_name: data.lastname,
       password: data.password,
-      fcm_token: localStorage.getItem("ct"),
+      fcm_token: localStorage.getItem("ct") || "",
       google_signed: false,
     };
     let apiCall = signUPAPICall(signUpData);

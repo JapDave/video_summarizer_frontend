@@ -43,7 +43,7 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     let reqData = {
-      fcm_token: localStorage.getItem("ct"),
+      fcm_token: localStorage.getItem("ct") || "",
       google_signed: false,
       email: data.emailId,
       password: data.password,
