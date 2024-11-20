@@ -10,12 +10,13 @@ import SignupPage from "../features/signUp/SignupPage";
 import "../App.css";
 import { ToastContainer } from "react-toastify";
 import HomePage from "../features/homePage";
-import ContactUsPage from "../features/contactUs/COntactUs";
+import ContactUsPage from "../features/contactUs/ContactUs";
 import Notification from "../components/notification/Notification";
 import Profile from "../features/profile/Profile";
 import SummarizeContent from "../components/summarizeContent/SummarizeContent";
 import TermsAndConditions from "../features/termsPolicy/TermsAndConditions";
 import Privacy from "../features/privacyPolicy/Privacy";
+import Subscription from "../features/subscription/Subscriptions";
 
 const AppRoutes = () => {
   return (

@@ -251,34 +251,66 @@ const Navbar = () => {
                           <div className="dropdown-content">
                             <div className="notifications">
                               <ul>
-                                {notifications.map((item, index) => (
-                                  <li key={index}>
-                                    <div className="notification-content">
-                                      <div className="notification-message">
-                                        <Tooltip title={item.message}>
-                                          {item.message !== null
-                                            ? truncateTitle(item.message, 35)
-                                            : null}
-                                        </Tooltip>
+                                {notifications.map((item, index) => {
+                                  const statuses = [
+                                    {
+                                      text: "Processing",
+                                      class: "bg-blue-100 text-blue-700",
+                                    },
+                                    {
+                                      text: "Queue",
+                                      class: "bg-yellow-100 text-yellow-700",
+                                    },
+                                    {
+                                      text: "Summarize",
+                                      class: "bg-green-100 text-green-700",
+                                    },
+                                  ];
+                                  const randomStatus =
+                                    statuses[
+                                      Math.floor(
+                                        Math.random() * statuses.length
+                                      )
+                                    ];
+                                  return (
+                                    <li key={index}>
+                                      <div className="notification-content">
+                                        <div className="flex items-center justify-between w-full">
+                                          <div className="notification-message w-[80%]">
+                                            <Tooltip title={item.message}>
+                                              {item.message !== null
+                                                ? truncateTitle(
+                                                    item.message,
+                                                    30
+                                                  )
+                                                : null}
+                                            </Tooltip>
+                                          </div>
+                                          <span
+                                            className={`${randomStatus.class} px-2 py-1 rounded w-36 text-sm`}
+                                          >
+                                            {randomStatus.text}
+                                          </span>
+                                        </div>
+                                        <div className="notification-details">
+                                          <span className="date">
+                                            {convertDateFormat(item.created_on)}
+                                          </span>
+                                          <span className="video-name">
+                                            <Tooltip title={item.video_title}>
+                                              {item.video_title !== null
+                                                ? truncateTitle(
+                                                    item.video_title,
+                                                    10
+                                                  )
+                                                : null}
+                                            </Tooltip>
+                                          </span>
+                                        </div>
                                       </div>
-                                      <div className="notification-details">
-                                        <span className="date">
-                                          {convertDateFormat(item.created_on)}
-                                        </span>
-                                        <span className="video-name">
-                                          <Tooltip title={item.video_title}>
-                                            {item.video_title !== null
-                                              ? truncateTitle(
-                                                  item.video_title,
-                                                  10
-                                                )
-                                              : null}
-                                          </Tooltip>
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </li>
-                                ))}
+                                    </li>
+                                  );
+                                })}
                               </ul>
                             </div>
                             {notifications?.length > 0 && (
@@ -362,7 +394,10 @@ const Navbar = () => {
                           <img src={profileLogo} alt="" />
                           <span className="item-text">Profile</span>
                         </div>
-                        <div className="profile-menu-item">
+                        <div
+                          onClick={() => navigate("/subscription")}
+                          className="profile-menu-item"
+                        >
                           <img src={subscriptionImg} alt="" />
                           <span className="item-text">Subscription</span>
                         </div>

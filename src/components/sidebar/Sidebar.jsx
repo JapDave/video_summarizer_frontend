@@ -1,8 +1,9 @@
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AiFillPlusCircle, AiOutlineDoubleLeft } from "react-icons/ai";
+import { AiOutlineDoubleLeft } from "react-icons/ai";
 import { MdDashboard, MdLogout, MdSubscriptions } from "react-icons/md";
-import { FaListUl, FaRegUser } from "react-icons/fa";
+import { LuListVideo } from "react-icons/lu";
+import { FaRegUser } from "react-icons/fa";
 import { setIsAdmin } from "../../redux/slices/adminSlice";
 import { useState } from "react";
 
@@ -111,7 +112,7 @@ const Sidebar = () => {
           </li>
 
           {/* Plan & Subscription */}
-          {/* <li
+          <li
             className={`relative cursor-pointer ${
               isSidebarOpen ? "px-4" : "px-0 flex justify-center items-center"
             } py-2 flex items-center ${
@@ -144,7 +145,39 @@ const Sidebar = () => {
                 </span>
               )}
             </a>
-          </li> */}
+          </li>
+
+          {/* Video List */}
+          <li
+            className={`relative cursor-pointer ${
+              isSidebarOpen ? "px-4" : "px-0 flex justify-center items-center"
+            } py-2 flex items-center ${
+              uri === "/admin/video-list"
+                ? "bg-[#051b8d] text-white rounded-md"
+                : "text-[#ccc]"
+            }`}
+          >
+            <a
+              href="/admin/video-list"
+              className={`desktop:py-[7px] smallPc:py-[4px] flex items-center justify-start ${
+                isSidebarOpen ? "gap-4" : "gap-0"
+              } py-1 font-semibold`}
+            >
+              <LuListVideo
+                size={15}
+                color={uri === "/admin/video-list" ? "#fff" : "#ccc"}
+              />
+              {isSidebarOpen && (
+                <span
+                  className={`text-sm ${
+                    uri === "/admin/video-list" ? "text-white" : "text-[#ccc]"
+                  }`}
+                >
+                  Video List
+                </span>
+              )}
+            </a>
+          </li>
         </ul>
 
         {/* Logout */}
@@ -157,7 +190,7 @@ const Sidebar = () => {
             }`}
           >
             <div
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className={`desktop:py-[7px] smallPc:py-[4px] w-full flex items-center justify-start ${
                 isSidebarOpen ? "gap-4" : "gap-0"
               } py-1 rounded-md border-2 border-[#fff] text-[#fff] px-4 py-3 font-semibold`}

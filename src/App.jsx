@@ -11,7 +11,7 @@ import SignupPage from "./features/signUp/SignupPage";
 import "./app.css";
 import { ToastContainer } from "react-toastify";
 import HomePage from "./features/homePage";
-import ContactUsPage from "./features/contactUs/COntactUs";
+import ContactUsPage from "./features/contactUs/ContactUs";
 import Notification from "./components/notification/Notification";
 import Profile from "./features/profile/Profile";
 import SummarizeContent from "./components/summarizeContent/SummarizeContent";
@@ -21,6 +21,7 @@ import AdminRoutes from "./routes/AdminRoutes";
 import { setUserData } from "./redux/slices/adminSlice";
 import { API_BASE_URL } from "./utils/ENVImport";
 import PlayerComponent from "./components/summarizeContent/PlayerComponent";
+import Subscription from "./features/subscription/Subscriptions";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -72,6 +73,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/contactus" element={<ContactUsPage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/subscription" element={<Subscription />} />
           <Route path="/video-summarize" element={<SummarizeContent />} />
           <Route path="/video-summarize-player" element={<PlayerComponent />} />
           <Route path="/terms-conditions" element={<TermsAndConditions />} />

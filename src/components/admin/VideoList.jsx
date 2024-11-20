@@ -2,29 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Modal, Tooltip, Input } from "antd";
 import DataTable from "react-data-table-component";
 import { truncateTitle } from "../../utils/TruncateString";
-import AddPlanForm from "./AddPlanForm";
 
 const { Search } = Input;
 
-const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
+const VideoPlayListTable = ({ data, getStripePlansHandler }) => {
   const [sortedData, setSortedData] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState();
-
-  // Sort data
-  useEffect(() => {
-    const sorted = data
-      ?.slice()
-      .sort((a, b) =>
-        a.is_active === b.is_active && a.amount > b.amount
-          ? 0
-          : a.is_active
-          ? -1
-          : 1
-      );
-    setSortedData(sorted);
-  }, [data]);
 
   const columns = [
     {
@@ -32,15 +17,6 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
       cell: (row) => (
         <Tooltip title={row.name}>
           {row.name ? truncateTitle(row.name, 10) : "-"}
-        </Tooltip>
-      ),
-      sortable: true,
-    },
-    {
-      name: "Plan Subtitle",
-      cell: (row) => (
-        <Tooltip title={row.sub_title}>
-          {row.sub_title ? truncateTitle(row.sub_title, 10) : "-"}
         </Tooltip>
       ),
       sortable: true,
@@ -75,31 +51,41 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
       width: "300px",
     },
     {
-      name: "Status",
-      cell: (row) =>
-        row.is_active ? (
-          <div className="p-2 bg-green-600 rounded text-[#FFFFFF] text-[12px] text-center w-[70px]">
-            Active
-          </div>
-        ) : (
-          <div className="p-2 bg-red-600 rounded text-[#FFFFFF] text-[12px] text-center w-[70px]">
-            Inactive
-          </div>
-        ),
-      sortable: true,
-    },
-    {
-      name: "Edit",
+      name: "Action",
       cell: (row) => (
         <button
-          className="p-2 bg-[#003366] rounded text-[#FFFFFF] text-[12px] w-[70px]"
-          onClick={() => handleEdit(row)}
+          className="p-2 bg-red-800 rounded text-[#FFFFFF] text-[12px] w-[70px]"
+          onClick={() => handleDeleteVideo(row.id)}
         >
-          Edit
+          Delete
         </button>
       ),
     },
   ];
+
+  const filterData = () => {
+    if (searchQuery === "") return sortedData;
+    return sortedData.filter((row) => {
+      return (
+        row.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        row.amount?.toString().includes(searchQuery.toString()) ||
+        row.id?.toString().toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+  };
+
+  useEffect(() => {
+    const sorted = data
+      ?.slice()
+      .sort((a, b) =>
+        a.is_active === b.is_active && a.amount > b.amount
+          ? 0
+          : a.is_active
+          ? -1
+          : 1
+      );
+    setSortedData(sorted);
+  }, [data]);
 
   const customStyles = {
     table: {
@@ -153,20 +139,19 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
     },
   };
 
-  // Handle edit functionality
   const handleEdit = (data) => {
     setSelectedRow(data);
     setModalOpen(true);
   };
 
-  const filterData = () => {
-    if (searchQuery === "") return sortedData;
-    return sortedData.filter((row) => {
-      return (
-        row.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.amount?.toString().includes(searchQuery.toString()) ||
-        row.id?.toString().toLowerCase().includes(searchQuery.toLowerCase())
-      );
+  const handleDeleteVideo = (id) => {
+    Modal.confirm({
+      title: `Are you sure you want to delete this video?`,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk: () => {},
+      onCancel: () => {},
     });
   };
 
@@ -174,9 +159,7 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
     sortedData && (
       <div className="rounded-lg shadow-md bg-white p-4">
         <div className="mb-4 flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-800">
-            Plans and Subscription
-          </h2>
+          <h2 className="text-xl font-bold text-gray-800">Video List</h2>
           <Search
             placeholder="Search Users"
             allowClear
@@ -199,27 +182,9 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
           defaultSortFieldId="Status"
           selectableRowsHighlight
         />
-        {modalOpen && (
-          <Modal
-            open={modalOpen}
-            onCancel={() => setModalOpen(false)}
-            footer={null}
-            destroyOnClose
-            width={656}
-            centered
-            className="font-poppins bg-[#fafafc]"
-            style={{ backgroundColor: "#fafafc" }}
-          >
-            <AddPlanForm
-              setShowModal={setModalOpen}
-              // getStripePlansHandler={getStripePlansHandler}
-              // selectedData={selectedRow!}
-            />
-          </Modal>
-        )}
       </div>
     )
   );
 };
 
-export default PlanAndSubscriptionTable;
+export default VideoPlayListTable;

@@ -1,12 +1,36 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    fontSize: {
+      xxxs: "11px",
+      xxs: "12px",
+      xs: ".75rem",
+      sm: "0.8rem",
+      base: "1rem",
+      xl: "1.25rem",
+      "2xl": "1.563rem",
+      "3xl": "1.953rem",
+      "4xl": "2.441rem",
+      "5xl": "3.052rem",
+      "6xl": "3.75rem",
+      "7xl": "4.5rem",
+      "8xl": "6rem",
+      "9xl": "8rem",
+      "logo-tune": "28px",
+    },
+    fontWeight: {
+      100: "100",
+      200: "200",
+      300: "300",
+      400: "400",
+      500: "500",
+      600: "600",
+      700: "700",
+      800: "800",
+      900: "900",
+    },
     extend: {},
   },
   plugins: [],
-}
-
+};

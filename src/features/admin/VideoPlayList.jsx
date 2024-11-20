@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { Button, Modal, Select } from "antd";
-import PlanAndSubscriptionTable from "../../components/admin/PlanAndSubscriptionTable";
-import AddPlanForm from "../../components/admin/AddPlanForm";
+import VideoPlayListTable from "../../components/admin/VideoList";
 
-const PlanAndSubscription = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+const VideoPlayList = () => {
   const filterData = [
     {
       name: "Basic Plan",
@@ -71,50 +67,62 @@ const PlanAndSubscription = () => {
       sub_title: "Yearly Enterprise Plan",
       is_stripe_plan: true,
     },
+    {
+      name: "Starter Plan",
+      id: 4,
+      currency: "EUR",
+      image: "https://example.com/starter-plan.png",
+      token_limit: 500,
+      interval: "month",
+      is_active: true,
+      created_at: "2023-04-05T08:00:00Z",
+      price_id: "price_101",
+      product_id: 104,
+      description: {
+        1: "Access to essential features",
+        2: "Community support",
+        3: "5GB storage",
+      },
+      amount: 5,
+      interval_count: 1,
+      sub_title: "Monthly Starter Plan",
+      is_stripe_plan: false,
+    },
+    {
+      name: "Premium Plan",
+      id: 5,
+      currency: "GBP",
+      image: null,
+      token_limit: 20000,
+      interval: "year",
+      is_active: true,
+      created_at: "2023-05-10T18:30:00Z",
+      price_id: "price_202",
+      product_id: 105,
+      description: {
+        1: "Unlimited access",
+        2: "24/7 premium support",
+        3: "Unlimited storage",
+      },
+      amount: 500,
+      interval_count: 1,
+      sub_title: "Yearly Premium Plan",
+      is_stripe_plan: true,
+    },
   ];
 
   const numberOfActivePlans = 3;
 
   return (
-    <div className="w-full">
-      <div className="flex justify-between items-center mb-3">
-        <div className="flex gap-2 items-center">
-          <Button
-            data-cy="add-plan"
-            disabled={numberOfActivePlans >= 6}
-            onClick={() => setModalOpen(true)}
-            className={`rounded-lg h-12 w-15 bg-blue-600 text-white ${
-              numberOfActivePlans >= 6 ? "opacity-40" : ""
-            }`}
-          >
-            Add Plan
-          </Button>
-        </div>
+    <div className="h-screen w-full p-2">
+      <div className="w-full rounded-md">
+        <VideoPlayListTable
+          getStripePlansHandler={() => {}}
+          data={filterData ? filterData : data}
+        />
       </div>
-      {modalOpen && (
-        <Modal
-          open={modalOpen}
-          onCancel={() => setModalOpen(false)}
-          okButtonProps={{ style: { backgroundColor: "#4285F4" } }}
-          footer={null}
-          destroyOnClose
-          width={656}
-          className="font-poppins bg-[#fafafc] mt-10 mb-4 rounded-xl"
-          style={{ backgroundColor: "#fafafc" }}
-          centered
-        >
-          <AddPlanForm
-            setShowModal={setModalOpen}
-            // getStripePlansHandler={getStripePlansHandler}
-          />
-        </Modal>
-      )}
-      <PlanAndSubscriptionTable
-        getStripePlansHandler={() => {}}
-        data={filterData ? filterData : data}
-      />
     </div>
   );
 };
 
-export default PlanAndSubscription;
+export default VideoPlayList;

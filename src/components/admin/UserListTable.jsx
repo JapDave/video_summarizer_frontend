@@ -9,6 +9,7 @@ const { Search } = Input;
 const UserListTable = ({ userData, updateUser, loading }) => {
   const [sortedData, setSortedData] = useState();
   const [searchQuery, setSearchQuery] = useState("");
+  const [loadingIds, setLoadingIds] = useState({});
   const { userData: userInfo } = useSelector((state) => state.admin);
 
   const columns = [
@@ -46,7 +47,7 @@ const UserListTable = ({ userData, updateUser, loading }) => {
       name: "Action",
       cell: (row) => (
         <div className="flex justify-center gap-2">
-          {loading ? (
+          {loadingIds[row.id] ? (
             <button
               className="p-2 rounded bg-gray-400 text-white text-xs w-[80px] cursor-not-allowed"
               disabled
@@ -151,8 +152,20 @@ const UserListTable = ({ userData, updateUser, loading }) => {
       okText: "Yes",
       okType: "danger",
       cancelText: "No",
-      onOk() {
-        updateUser(id, is_blocked);
+      onOk: async () => {
+        setLoadingIds((prev) => ({ ...prev, [id]: true }));
+        try {
+          await updateUser(id, is_blocked);
+          toast.success(
+            `User has been successfully ${
+              is_blocked ? "blocked" : "unblocked"
+            }.`
+          );
+        } catch (error) {
+          toast.error("An error occurred while updating the user.");
+        } finally {
+          setLoadingIds((prev) => ({ ...prev, [id]: false }));
+        }
       },
       onCancel() {},
     });
@@ -167,10 +180,10 @@ const UserListTable = ({ userData, updateUser, loading }) => {
     if (searchQuery === "") return userData;
     return userData.filter((row) => {
       return (
-        row.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.id.toLowerCase().includes(searchQuery.toLowerCase())
+        row.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        row.last_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        row.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        row.id?.toString().toLowerCase().includes(searchQuery.toLowerCase())
       );
     });
   };
@@ -193,7 +206,7 @@ const UserListTable = ({ userData, updateUser, loading }) => {
         <Search
           placeholder="Search Users"
           allowClear
-          // onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => setSearchQuery(e.target.value)}
           style={{
             width: 250,
             borderRadius: "5px",
@@ -207,7 +220,8 @@ const UserListTable = ({ userData, updateUser, loading }) => {
           columns={columns}
           data={filterData()}
           pagination
-          paginationPerPage={15}
+          paginationPerPage={10}
+          paginationRowsPerPageOptions={[10]}
           highlightOnHover
           responsive
           customStyles={customStyles}
