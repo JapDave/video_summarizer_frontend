@@ -264,152 +264,115 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   // *************************************************************
   return (
     <div
-      className={`bg-white-800 w-96  ${
-        hovered && "gradient-border"
-      } smallPc:px-4 smallPc:py-4  border border-[#ECECEC] flex gap-y-7  flex-col justify-start rounded-md px-4 py-4 text-[#000]`}
+      className={`bg-[#FFFFFF] w-96 ${
+        hovered ? "gradient-border" : ""
+      } smallPc:px-4 smallPc:py-4 border border-[#ECECEC] flex gap-y-7 flex-col justify-start rounded-md px-4 py-4 text-[#000]`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{ cursor: "pointer" }}
     >
       <div className="flex flex-col items-start gap-y-2 gap-x-2 smallPc:gap-y-1">
-        {/* {index === 0 ? (
-          <StandardPlanIcon color={hovered ? '#313131' : '#F4F4FC'} />
-        ) : index === 1 ? (
-          <PremiumPlanIcon color={hovered ? '#313131' : '#F4F4FC'} />
-        ) : (
-          <PlatinumPlanIcon color={hovered ? '#313131' : '#F4F4FC'} />
-        )} */}
-        <label className={`text-[24px] font-800 font-poppins `}>
-          {data?.name}
-        </label>
-        <label className={`text-xxs font-400 font-poppins `}>
-          {data?.sub_title}
+        <label className="text-[24px] font-800 font-poppins">{data.name}</label>
+        <label className="text-xxs font-400 font-poppins capitalize">
+          <b>Priority</b>: {data.priority}
         </label>
       </div>
 
-      <label className={`font-500 flex items-center gap-x-2 `}>
+      <label className="font-500 flex items-center gap-x-2">
         <div className="flex items-center text-[24.7px] font-poppins gap-x-2 w-full">
-          <span className="font-700 smallPc:text-[16px]">${data?.amount}</span>
-          <p className="font-400 smallPc:text-[16px]">/ month</p>
+          <span className="font-700 smallPc:text-[16px]">${data.amount}</span>
+          <p className="font-400 smallPc:text-[16px]">/ {data.interval}</p>
         </div>
       </label>
+
       <div>
         <label className="text-[12px] font-poppins font-900">
-          {`${data?.name} features:`}
+          {`${data.name} features:`}
         </label>
-        <ul
-          className={`smallPc:gap-y-2 mt-3 font-400 flex flex-col gap-y-4
-             text-[#6E6E78]`}
-        >
-          {data &&
-            data?.description &&
-            Object.values(data?.description).map((item, index) => {
-              return (
-                item.trim() && (
-                  <li
-                    key={index}
-                    className="flex items-center justify-start gap-x-2"
-                  >
-                    <img
-                      src={blackTickIcon}
-                      alt="right-icon"
-                      className="h-4 w-4"
-                    />
-                    <span className="smallPc:text-xs text-sm">{item}</span>
-                  </li>
-                )
-              );
-            })}
+        <ul className="smallPc:gap-y-2 mt-3 font-400 flex flex-col gap-y-4 text-[#6E6E78]">
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              Video Length: {data.video_length} minutes
+            </span>
+          </li>
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              Face Detection Level: {data.face_detection}
+            </span>
+          </li>
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              Transitions: {data.transitions} sec
+            </span>
+          </li>
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              Watermarking: {data.watermarking ? "Enabled" : "Disabled"}
+            </span>
+          </li>
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              Chunk Size: {data.chunk_size} sec
+            </span>
+          </li>
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              AI-Model: {data.ai_model}
+            </span>
+          </li>
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              Output Resolution: {data.output_resolution}
+            </span>
+          </li>
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              Video Summarization Level: {data.video_summarization}
+            </span>
+          </li>
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              File Retention Policy: {data.storage_space} Days
+            </span>
+          </li>
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              Storage Space: {data.storage_space} GB
+            </span>
+          </li>
+          <li className="flex items-center justify-start gap-x-2">
+            <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
+            <span className="smallPc:text-xs text-sm">
+              Notifications: {data.notification_system}
+            </span>
+          </li>
         </ul>
       </div>
 
       <div className="flex flex-1 gap-y-3 justify-end flex-col w-full">
-        {!haveCoupon && (
-          <div
-            onClick={() => {
-              setHaveCoupon(true);
-            }}
-          >
-            <img
-              src={haveCouponImg}
-              alt="coupon-img"
-              width={100}
-              height={100}
-            />
-          </div>
-        )}
-        {haveCoupon && (
-          <div className="flex flex-col items-start">
-            <input
-              type="text"
-              name="couponInput"
-              onChange={couponInputChange}
-              value={coupon}
-              placeholder="Enter Coupon"
-              className={` border-2 w-full h-10 rounded-lg pl-2 px-3 border-gray-600 placeholder:text-gray-500`}
-            />
-            <button
-              onClick={() => {
-                if (coupon.trim()) {
-                  verifyCouponHandler();
-                } else {
-                  setHaveCoupon(false);
-                }
-              }}
-              className={`text-[#1090F7] mt-[3px] font-400 text-xxxs font-poppins cursor-pointer underline ${
-                coupon.trim() === "" && "pointer-events-none"
-              }`}
-            >
-              Apply Coupon
-            </button>
-          </div>
-        )}
-
         <button
-          disabled={isLoading}
           className={`${
-            data?.current_plan
-              ? hovered
-                ? "text-white-800 opacity-75 bg-gradient-to-b from-[#1104F3] to-[#0EDEF9]"
-                : "text-white-800 opacity-75 bg-gradient-to-b from-[#1104F3] to-[#0EDEF9] "
-              : length - 1 === index
-              ? "bg-transparent border border-[#1090F7]"
+            data.current_plan
+              ? "text-[#ffffff] bg-gradient-to-b from-[#1104F3] to-[#0EDEF9] opacity-75"
               : hovered
-              ? "text-white-800 bg-[#1090F7]"
-              : "text-white-800 bg-[#1090F7]"
-          }  smallPc:h-10 rounded-md text-[10px]  h-10 font-400 font-poppins  flex justify-center items-center`}
-          onClick={() => {
-            handleClick();
-          }}
+              ? "text-[#ffffff] bg-[#051b8d]"
+              : "text-[#ffffff] bg-[#051b8d]"
+          } smallPc:h-10 rounded-md h-10 font-400 text-[16px] font-poppins flex justify-center items-center`}
+          onClick={handleClick}
         >
-          <span className="mr-1">{btnText}</span>
-          {isLoading && <Spinner />}
+          <span>Select Plan</span>
         </button>
       </div>
-
-      {/* Modal */}
-      {showModal && (
-        <Modal
-          visible={showModal}
-          onCancel={closeModal}
-          okButtonProps={{ style: { backgroundColor: "white" } }}
-          footer={null}
-          destroyOnClose
-          width={656}
-          className="font-poppins bg-[#fafafc]"
-          style={{ backgroundColor: "#fafafc" }}
-          centered
-        >
-          {/* <div style={{ backgroundColor: "#fafafc" }}>
-            <PaymentForm
-              isLoading={isLoading}
-              setShowModal={setShowModal}
-              onPaymentSubmit={createSubscriptionHandler}
-              flag={2}
-            />
-          </div> */}
-        </Modal>
-      )}
     </div>
   );
 };

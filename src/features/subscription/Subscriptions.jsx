@@ -11,9 +11,11 @@ const Subscription = () => {
   return (
     <React.Fragment>
       <div className="flex flex-col min-h-screen">
-        <Navbar />
+        <div className="mb-[5%]">
+          <Navbar />
+        </div>
         <div
-          className={`flex-1 flex flex-wrap gap-x-2 gap-y-4 border-box justify-center items-center`}
+          className={`flex-1 flex mb-[5%] flex-wrap gap-x-2 gap-y-4 border-box justify-center items-center`}
         >
           {plansDummy &&
             plansDummy.map((data, index) => {
