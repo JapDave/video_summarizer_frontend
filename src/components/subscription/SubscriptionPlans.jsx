@@ -287,7 +287,7 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
 
       <div>
         <label className="text-[12px] font-poppins font-900">
-          {`${data.name} features:`}
+          {`${data.name} Features:`}
         </label>
         <ul className="smallPc:gap-y-2 mt-3 font-400 flex flex-col gap-y-4 text-[#6E6E78]">
           <li className="flex items-center justify-start gap-x-2">
