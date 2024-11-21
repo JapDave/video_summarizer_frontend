@@ -6,6 +6,8 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
 import { useDispatch, useSelector } from "react-redux";
 import SignupPage from "./features/signUp/SignupPage";
 import "./app.css";
@@ -27,6 +29,8 @@ const App = () => {
   const dispatch = useDispatch();
   const token = localStorage.getItem("accessToken");
   const isAdmin = useSelector((state) => state.admin.isAdmin);
+  const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+  const stripePromise = loadStripe(stripeKey);
 
   const getLoggedInUser = async () => {
     try {
@@ -56,6 +60,11 @@ const App = () => {
     }
   };
 
+  const handlePaymentSuccess = (paymentMethod) => {
+    console.log("Payment successful:", paymentMethod);
+    alert("Payment successful!");
+  };
+
   useEffect(() => {
     if (token) {
       getLoggedInUser();
@@ -63,41 +72,46 @@ const App = () => {
   }, [token]);
 
   return (
-    <React.Fragment>
-      <Notification />
-      <Router>
-        <Routes>
-          {/* <Route path="/admin/*" element={<AdminRoutes />} /> */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/" element={<HomePage />} />
-          <Route path="/contactus" element={<ContactUsPage />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/subscription" element={<Subscription />} />
-          <Route path="/video-summarize" element={<SummarizeContent />} />
-          <Route path="/video-summarize-player" element={<PlayerComponent />} />
-          <Route path="/terms-conditions" element={<TermsAndConditions />} />
-          <Route path="/privacy" element={<Privacy />} />
-          {isAdmin ? (
-            <Route path="/admin/*" element={<AdminRoutes />} />
-          ) : (
-            <Route path="/admin/*" element={<Navigate to="/" />} />
-          )}
-          <Route path="*" element={<HomePage />} />
-        </Routes>
-      </Router>
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
-    </React.Fragment>
+    <Elements stripe={stripePromise}>
+      <React.Fragment>
+        <Notification />
+        <Router>
+          <Routes>
+            {/* <Route path="/admin/*" element={<AdminRoutes />} /> */}
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/contactus" element={<ContactUsPage />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/subscription" element={<Subscription />} />
+            <Route path="/video-summarize" element={<SummarizeContent />} />
+            <Route
+              path="/video-summarize-player"
+              element={<PlayerComponent />}
+            />
+            <Route path="/terms-conditions" element={<TermsAndConditions />} />
+            <Route path="/privacy" element={<Privacy />} />
+            {isAdmin ? (
+              <Route path="/admin/*" element={<AdminRoutes />} />
+            ) : (
+              <Route path="/admin/*" element={<Navigate to="/" />} />
+            )}
+            <Route path="*" element={<HomePage />} />
+          </Routes>
+        </Router>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+      </React.Fragment>
+    </Elements>
   );
 };
 

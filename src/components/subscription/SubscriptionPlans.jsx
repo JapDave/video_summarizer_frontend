@@ -2,6 +2,7 @@ import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { Modal } from "antd";
 import blackTickIcon from "../../assets/svg/black-tick-icon.svg";
 import haveCouponImg from "../../assets/svg/haveCoupon.svg";
+import PaymentForm from "../admin/PaymentForm";
 
 const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   console.log("🚀 ~ data:", data);
@@ -368,11 +369,28 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
               ? "text-[#ffffff] bg-[#051b8d]"
               : "text-[#ffffff] bg-[#051b8d]"
           } smallPc:h-10 rounded-md h-10 font-400 text-[16px] font-poppins flex justify-center items-center`}
-          onClick={handleClick}
+          // onClick={handleClick}
+          onClick={() => setShowModal(true)}
         >
           <span>Select Plan</span>
         </button>
       </div>
+      {showModal && (
+        <Modal
+          visible={showModal}
+          onCancel={closeModal}
+          okButtonProps={{ style: { backgroundColor: "white" } }}
+          footer={null}
+          destroyOnClose
+          width={656}
+          className="font-poppins bg-[#fafafc] rounded-md"
+          centered
+        >
+          <div>
+            <PaymentForm />
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
