@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from "react";
-import "./CustomLoader.scss";
+import React, { useEffect, useState } from 'react';
+import './CustomLoader.scss';
 
-const TextLoader = ({
-  message = "Loading...",
-  size = "large",
-  color = "blue",
-}) => {
+const Loader = ({ message = 'Loading...', size = 'large', color = 'blue' }) => {
   return (
     <div
       className={`custom-loader custom-loader--${size}`}
@@ -17,4 +13,4 @@ const TextLoader = ({
   );
 };
 
-export default TextLoader;
+export default Loader;

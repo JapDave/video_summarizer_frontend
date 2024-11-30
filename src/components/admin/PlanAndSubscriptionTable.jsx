@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Tooltip, Input } from "antd";
-import DataTable from "react-data-table-component";
-import { truncateTitle } from "../../utils/TruncateString";
-import AddPlanForm from "./AddPlanForm";
+import React, { useEffect, useState } from 'react';
+import { Modal, Tooltip, Input } from 'antd';
+import DataTable from 'react-data-table-component';
+import { truncateTitle } from '../../utils/TruncateString';
+import AddPlanForm from './AddPlanForm';
 
 const { Search } = Input;
 
 const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
+  console.log('🚀 ~ PlanAndSubscriptionTable ~ data:', data);
   const [sortedData, setSortedData] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRow, setSelectedRow] = useState();
 
@@ -28,54 +29,115 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
 
   const columns = [
     {
-      name: "Plan Name",
+      name: 'ID',
+      selector: (row) => row.id ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Name',
       cell: (row) => (
         <Tooltip title={row.name}>
-          {row.name ? truncateTitle(row.name, 10) : "-"}
+          {row.name ? truncateTitle(row.name, 10) : '-'}
         </Tooltip>
       ),
       sortable: true,
     },
     {
-      name: "Plan Subtitle",
+      name: 'Subtitle',
       cell: (row) => (
         <Tooltip title={row.sub_title}>
-          {row.sub_title ? truncateTitle(row.sub_title, 10) : "-"}
+          {row.sub_title ? truncateTitle(row.sub_title, 10) : '-'}
         </Tooltip>
       ),
       sortable: true,
     },
     {
-      name: "Price",
-      selector: (row) => (row.amount ? `$${row.amount}` : "-"),
+      name: 'Currency',
+      selector: (row) => row.currency ?? '-',
       sortable: true,
     },
     {
-      name: "Interval",
-      selector: (row) => row.interval ?? "-",
+      name: 'Amount',
+      selector: (row) => (row.amount ? `$${row.amount}` : '-'),
       sortable: true,
     },
     {
-      name: "Description",
-      cell: (row) => (
-        <div className="my-2 flex min-w-[200px] flex-col gap-y-1">
-          {row.description &&
-            Object.values(row.description).map(
-              (desc, index) =>
-                desc.trim() && (
-                  <p key={index} className="flex">
-                    <span className="w-5">{`${index + 1}.`}</span>
-                    <span>{desc}</span>
-                  </p>
-                )
-            )}
-        </div>
-      ),
+      name: 'Interval',
+      selector: (row) => row.interval ?? '-',
       sortable: true,
-      width: "300px",
     },
     {
-      name: "Status",
+      name: 'Interval Count',
+      selector: (row) => row.interval_count ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Watermarking',
+      selector: (row) => (row.watermarking ? 'Yes' : 'No'),
+      sortable: true,
+    },
+    {
+      name: 'Storage Space',
+      selector: (row) => row.storage_space ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Chunk Size',
+      selector: (row) => row.chunk_size ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Notification Type',
+      selector: (row) => row.notification_type ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'AI Model',
+      selector: (row) => row.ai_model ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Output Resolutions',
+      selector: (row) => row.output_resolutions ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Priority',
+      selector: (row) => row.priority ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Video Length',
+      selector: (row) => row.video_length ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'File Retention',
+      selector: (row) => row.file_retention ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Face Detection',
+      selector: (row) => (row.face_detection ? 'Yes' : 'No'),
+      sortable: true,
+    },
+    {
+      name: 'Storage Limited',
+      selector: (row) => (row.storage_limited ? 'Yes' : 'No'),
+      sortable: true,
+    },
+    {
+      name: 'Is Stripe Plan',
+      selector: (row) => (row.is_stripe_plan ? 'Yes' : 'No'),
+      sortable: true,
+    },
+    {
+      name: 'Transitions',
+      selector: (row) => row.transitions ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Status',
       cell: (row) =>
         row.is_active ? (
           <div className="p-2 bg-green-600 rounded text-[#FFFFFF] text-[12px] text-center w-[70px]">
@@ -89,78 +151,66 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
       sortable: true,
     },
     {
-      name: "Edit",
-      cell: (row) => (
-        <button
-          className="p-2 bg-[#003366] rounded text-[#FFFFFF] text-[12px] w-[70px]"
-          onClick={() => handleEdit(row)}
-        >
-          Edit
-        </button>
-      ),
+      name: 'Created At',
+      selector: (row) => new Date(row.created_at).toLocaleDateString() ?? '-',
+      sortable: true,
     },
   ];
 
   const customStyles = {
     table: {
       style: {
-        width: "100%",
-        minHeight: "80vh",
-        height: "100%",
-        backgroundColor: "#FFFFFF",
-        borderRadius: "10px",
-        overflow: "hidden",
-        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+        width: '100%',
+        minHeight: '80vh',
+        height: '100%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '10px',
+        overflow: 'hidden',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
       },
     },
     headRow: {
       style: {
-        display: "flex",
-        justifyContent: "space-between",
-        backgroundColor: "#003366",
-        color: "#FFFFFF",
-        fontWeight: "600",
-        fontSize: "16px",
-        borderBottom: "2px solid #ddd",
+        display: 'flex',
+        justifyContent: 'space-between',
+        backgroundColor: '#003366',
+        color: '#FFFFFF',
+        fontWeight: '600',
+        fontSize: '16px',
+        borderBottom: '2px solid #ddd',
       },
     },
     rows: {
       style: {
-        display: "flex",
-        justifyContent: "space-between",
-        fontSize: "14px",
-        padding: "12px",
-        cursor: "pointer",
-        backgroundColor: "#ffffff",
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontSize: '14px',
+        padding: '12px',
+        cursor: 'pointer',
+        backgroundColor: '#ffffff',
       },
       hoverStyle: {
-        backgroundColor: "#f0f4f7",
+        backgroundColor: '#f0f4f7',
       },
     },
     headCells: {
       style: {
-        fontSize: "14px",
-        fontWeight: "bold",
-        paddingLeft: "15px",
-        paddingRight: "15px",
+        fontSize: '14px',
+        fontWeight: 'bold',
+        paddingLeft: '15px',
+        paddingRight: '15px',
       },
     },
     pagination: {
       style: {
-        paddingTop: "10px",
-        borderBottom: "none",
+        paddingTop: '10px',
+        borderBottom: 'none',
       },
     },
   };
 
-  // Handle edit functionality
-  const handleEdit = (data) => {
-    setSelectedRow(data);
-    setModalOpen(true);
-  };
-
   const filterData = () => {
-    if (searchQuery === "") return sortedData;
+    if (searchQuery === '') return sortedData;
     return sortedData.filter((row) => {
       return (
         row.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -178,12 +228,12 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
             Plans and Subscription
           </h2>
           <Search
-            placeholder="Search Users"
+            placeholder="Search Plans"
             allowClear
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               width: 250,
-              borderRadius: "5px",
+              borderRadius: '5px',
             }}
           />
         </div>
@@ -208,7 +258,7 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
             width={656}
             centered
             className="font-poppins bg-[#fafafc]"
-            style={{ backgroundColor: "#fafafc" }}
+            style={{ backgroundColor: '#fafafc' }}
           >
             <AddPlanForm
               setShowModal={setModalOpen}

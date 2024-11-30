@@ -1,7 +1,7 @@
 // src/api/auth.js
-import axiosInstance from "./axios";
-import axios from "./axios";
-import { API_BASE_URL } from "../utils/ENVImport";
+import axiosInstance from './axios';
+import axios from './axios';
+import { API_BASE_URL } from '../utils/ENVImport';
 
 export const login = async (data) => {
   try {
@@ -54,7 +54,7 @@ export const YTVideo = async (data) => {
 export const updateUserStatus = async (id, is_blocked) => {
   try {
     const response = await axiosInstance.put(
-      `${API_BASE_URL}/api/v1/users/${id}`,
+      `${API_BASE_URL}/api/v1/users/get-user-by-id/${id}`,
       { is_blocked: is_blocked }
     );
     return response.data;
@@ -66,27 +66,27 @@ export const updateUserStatus = async (id, is_blocked) => {
 export const upLoadedVideo = async (data) => {
   try {
     // Make the API request
-    const accesstoken = localStorage.getItem("accessToken");
+    const accesstoken = localStorage.getItem('accessToken');
     const response = await axios.post(
       `${API_BASE_URL}/api/v1/summarize-video/video`,
       data,
       {
         headers: {
-          "Content-Type": "multipart/form-data", // Necessary for file uploads
+          'Content-Type': 'multipart/form-data', // Necessary for file uploads
           token: `${accesstoken}`,
         },
       }
     );
 
-    console.log("File uploaded successfully:", response.data);
+    console.log('File uploaded successfully:', response.data);
   } catch (error) {
-    console.error("Error uploading file:", error);
+    console.error('Error uploading file:', error);
   }
 };
 
 export const uploadProfile = async (data, firstName, lastName) => {
   try {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem('accessToken');
 
     const url = `${API_BASE_URL}/api/v1/users/update-profile?first_name=${encodeURIComponent(
       firstName
@@ -94,25 +94,25 @@ export const uploadProfile = async (data, firstName, lastName) => {
 
     const response = await axios.post(url, data, {
       headers: {
-        "Content-Type": "multipart/form-data",
+        'Content-Type': 'multipart/form-data',
         token: `${accessToken}`,
       },
     });
 
-    console.log("Profile image uploaded successfully:", response.data);
+    console.log('Profile image uploaded successfully:', response.data);
     return response.data;
   } catch (error) {
-    console.error("Error uploading profile image:", error);
+    console.error('Error uploading profile image:', error);
     throw error;
   }
 };
 
 export const deleteVideo = async (id) => {
   try {
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = localStorage.getItem('accessToken');
 
     if (!accessToken) {
-      throw new Error("Access token is missing. Please log in again.");
+      throw new Error('Access token is missing. Please log in again.');
     }
 
     // Make the API request
@@ -120,22 +120,34 @@ export const deleteVideo = async (id) => {
       `${API_BASE_URL}/api/v1/summarize-video/delete-video/${id}`,
       {
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           token: accessToken,
         },
       }
     );
 
-    console.log("Video deleted successfully:", response.data);
+    console.log('Video deleted successfully:', response.data);
 
     // Return the response to the caller
     return response;
   } catch (error) {
     console.error(
-      "Error in deleting video:",
+      'Error in deleting video:',
       error.response?.data || error.message
     );
     // Throw error to be handled by the caller
+    throw error;
+  }
+};
+
+export const deleteVideoFromAdmin = async (id, is_deleted) => {
+  try {
+    const response = await axiosInstance.put(
+      `${API_BASE_URL}/api/v1/users/video/${id}`,
+      { is_deleted: is_deleted }
+    );
+    return response.data;
+  } catch (error) {
     throw error;
   }
 };

@@ -1,157 +1,206 @@
-import React, { useEffect, useState } from "react";
-import { Modal, Tooltip, Input } from "antd";
-import DataTable from "react-data-table-component";
-import { truncateTitle } from "../../utils/TruncateString";
+import React, { useEffect, useState } from 'react';
+import { Modal, Tooltip, Input } from 'antd';
+import DataTable from 'react-data-table-component';
+import { truncateTitle } from '../../utils/TruncateString';
+import { authAPI } from '../../api';
+import { deleteVideoFromAdmin } from '../../api/auth';
 
 const { Search } = Input;
 
 const VideoPlayListTable = ({ data, getStripePlansHandler }) => {
   const [sortedData, setSortedData] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loadingIds, setLoadingIds] = useState({});
 
   const columns = [
     {
-      name: "Plan Name",
+      name: 'User ID',
+      selector: (row) => row.user_id ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Display Name',
+      selector: (row) => row.display_name ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Input Size (MB)',
+      selector: (row) =>
+        row.video_input_size ? `${row.video_input_size} MB` : '-',
+      sortable: true,
+    },
+    {
+      name: 'Output Size (MB)',
+      selector: (row) =>
+        row.video_output_size ? `${row.video_output_size} MB` : '-',
+      sortable: true,
+    },
+    {
+      name: 'Length (Min)',
+      selector: (row) =>
+        row.video_input_length
+          ? `${row.video_input_length.toFixed(2)} min`
+          : '-',
+      sortable: true,
+    },
+    {
+      name: 'URL',
+      cell: (row) =>
+        row.url ? (
+          <a
+            href={row.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500"
+          >
+            Link
+          </a>
+        ) : (
+          '-'
+        ),
+      sortable: false,
+    },
+    {
+      name: 'Timestamp',
+      selector: (row) => row.timestamp ?? '-',
+      sortable: true,
+    },
+    {
+      name: 'Created On',
+      selector: (row) =>
+        row.created_on ? new Date(row.created_on).toLocaleDateString() : '-',
+      sortable: true,
+    },
+    {
+      name: 'Status',
+      selector: (row) =>
+        row.is_processing
+          ? 'Processing'
+          : row.is_summarized
+          ? 'Summarized'
+          : 'Pending',
+      sortable: true,
+    },
+    {
+      name: 'Action',
       cell: (row) => (
-        <Tooltip title={row.name}>
-          {row.name ? truncateTitle(row.name, 10) : "-"}
-        </Tooltip>
-      ),
-      sortable: true,
-    },
-    {
-      name: "Price",
-      selector: (row) => (row.amount ? `$${row.amount}` : "-"),
-      sortable: true,
-    },
-    {
-      name: "Interval",
-      selector: (row) => row.interval ?? "-",
-      sortable: true,
-    },
-    {
-      name: "Description",
-      cell: (row) => (
-        <div className="my-2 flex min-w-[200px] flex-col gap-y-1">
-          {row.description &&
-            Object.values(row.description).map(
-              (desc, index) =>
-                desc.trim() && (
-                  <p key={index} className="flex">
-                    <span className="w-5">{`${index + 1}.`}</span>
-                    <span>{desc}</span>
-                  </p>
-                )
-            )}
+        <div className="flex justify-center gap-2">
+          {loadingIds[row.id] ? (
+            <button
+              className="p-2 rounded bg-gray-400 text-white text-xs w-[80px] cursor-not-allowed"
+              disabled
+            >
+              Deleting...
+            </button>
+          ) : (
+            <button
+              className={`p-2 rounded ${
+                row.is_deleted
+                  ? 'bg-red-800 text-[#FFFFFF]'
+                  : 'border-red-800 border text-red-800'
+              } text-[12px] w-[70px]`}
+              onClick={() => handleDeleteVideo(row.id)}
+            >
+              {row.is_deleted ? 'Deleted' : 'Delete'}
+            </button>
+          )}
         </div>
-      ),
-      sortable: true,
-      width: "300px",
-    },
-    {
-      name: "Action",
-      cell: (row) => (
-        <button
-          className="p-2 bg-red-800 rounded text-[#FFFFFF] text-[12px] w-[70px]"
-          onClick={() => handleDeleteVideo(row.id)}
-        >
-          Delete
-        </button>
       ),
     },
   ];
 
   const filterData = () => {
-    if (searchQuery === "") return sortedData;
+    if (searchQuery === '') return sortedData;
     return sortedData.filter((row) => {
-      return (
-        row.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        row.amount?.toString().includes(searchQuery.toString()) ||
-        row.id?.toString().toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      return row.display_name
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase());
     });
   };
 
   useEffect(() => {
-    const sorted = data
-      ?.slice()
-      .sort((a, b) =>
-        a.is_active === b.is_active && a.amount > b.amount
-          ? 0
-          : a.is_active
-          ? -1
-          : 1
-      );
-    setSortedData(sorted);
+    if (data) {
+      setSortedData(data);
+    }
   }, [data]);
 
   const customStyles = {
     table: {
       style: {
-        width: "100%",
-        minHeight: "80vh",
-        height: "100%",
-        backgroundColor: "#FFFFFF",
-        borderRadius: "10px",
-        overflow: "hidden",
-        boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+        width: '100%',
+        minHeight: '80vh',
+        height: '100%',
+        backgroundColor: '#FFFFFF',
+        borderRadius: '10px',
+        overflow: 'hidden',
+        boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
       },
     },
     headRow: {
       style: {
-        display: "flex",
-        justifyContent: "space-between",
-        backgroundColor: "#003366",
-        color: "#FFFFFF",
-        fontWeight: "600",
-        fontSize: "16px",
-        borderBottom: "2px solid #ddd",
+        display: 'flex',
+        justifyContent: 'space-between',
+        backgroundColor: '#003366',
+        color: '#FFFFFF',
+        fontWeight: '600',
+        fontSize: '16px',
+        borderBottom: '2px solid #ddd',
       },
     },
     rows: {
       style: {
-        display: "flex",
-        justifyContent: "space-between",
-        fontSize: "14px",
-        padding: "12px",
-        cursor: "pointer",
-        backgroundColor: "#ffffff",
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontSize: '14px',
+        padding: '12px',
+        cursor: 'pointer',
+        backgroundColor: '#ffffff',
       },
       hoverStyle: {
-        backgroundColor: "#f0f4f7",
+        backgroundColor: '#f0f4f7',
       },
     },
     headCells: {
       style: {
-        fontSize: "14px",
-        fontWeight: "bold",
-        paddingLeft: "15px",
-        paddingRight: "15px",
+        fontSize: '14px',
+        fontWeight: 'bold',
+        paddingLeft: '15px',
+        paddingRight: '15px',
       },
     },
     pagination: {
       style: {
-        paddingTop: "10px",
-        borderBottom: "none",
+        paddingTop: '10px',
+        borderBottom: 'none',
       },
     },
-  };
-
-  const handleEdit = (data) => {
-    setSelectedRow(data);
-    setModalOpen(true);
   };
 
   const handleDeleteVideo = (id) => {
     Modal.confirm({
       title: `Are you sure you want to delete this video?`,
-      okText: "Yes",
-      okType: "danger",
-      cancelText: "No",
-      onOk: () => {},
-      onCancel: () => {},
+      okText: 'Yes',
+      okType: 'danger',
+      cancelText: 'No',
+      onOk: async () => {
+        setLoadingIds((prev) => ({ ...prev, [id]: true }));
+        try {
+          await deleteVideoFromAdmin(id, true);
+          toast.success('Video has been deleted successfully.');
+
+          setSortedData((prevData) =>
+            prevData.filter((video) => video.id !== id)
+          );
+        } catch (error) {
+          console.error('Error deleting video:', error);
+          toast.error('An error occurred while deleting the video.');
+        } finally {
+          setLoadingIds((prev) => ({ ...prev, [id]: false }));
+        }
+      },
+      onCancel: () => {
+        console.log('Delete action canceled.');
+      },
     });
   };
 
@@ -166,7 +215,7 @@ const VideoPlayListTable = ({ data, getStripePlansHandler }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
               width: 250,
-              borderRadius: "5px",
+              borderRadius: '5px',
             }}
           />
         </div>

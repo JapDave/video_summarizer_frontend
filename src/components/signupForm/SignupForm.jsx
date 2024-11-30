@@ -1,15 +1,15 @@
-import React, { useRef, useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
-import { useForm } from "react-hook-form";
-import "./SignupForm.scss";
-import { Link, useNavigate } from "react-router-dom";
-import { UserLogo } from "../../assets/images/Images";
-import { GoogleLoginButton } from "../loginForm/GoogleLoginButton";
-import { API_BASE_URL } from "../../utils/ENVImport";
-import { authAPI } from "../../api";
-import "react-toastify/dist/ReactToastify.css";
-import TextLoader from "../customLoader/Loader";
-import ToastContainer from "../customToaster/ToastContainer";
+import React, { useRef, useState } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { useForm } from 'react-hook-form';
+import './SignupForm.scss';
+import { Link, useNavigate } from 'react-router-dom';
+import { UserLogo } from '../../assets/images/Images';
+import { GoogleLoginButton } from '../loginForm/GoogleLoginButton';
+import { API_BASE_URL } from '../../utils/ENVImport';
+import { authAPI } from '../../api';
+import 'react-toastify/dist/ReactToastify.css';
+import Loader from '../customLoader/Loader';
+import ToastContainer from '../customToaster/ToastContainer';
 
 const SignupForm = () => {
   const toastRef = useRef();
@@ -28,15 +28,15 @@ const SignupForm = () => {
     try {
       setLoader(true);
       const response = await authAPI.signup(data);
-      localStorage.setItem("accessToken", response.access_token);
-      toastRef.current.addToast("Singup Successful", 3000);
+      localStorage.setItem('accessToken', response.access_token);
+      toastRef.current.addToast('Singup Successful', 3000);
       // toast.success("Singup Successful");
       setTimeout(() => {
-        navigate("/");
+        navigate('/');
       }, 2000);
     } catch (error) {
-      console.error("Login failed:", error);
-      toastRef.current.addToast("Login failed", 3000);
+      console.error('Login failed:', error);
+      toastRef.current.addToast('Login failed', 3000);
       // toast.error(error.message);
       // setError("api", {
       //   message: "Login failed. Please check your credentials.",
@@ -51,7 +51,7 @@ const SignupForm = () => {
       first_name: data.firstname,
       last_name: data.lastname,
       password: data.password,
-      fcm_token: localStorage.getItem("ct") || "",
+      fcm_token: localStorage.getItem('ct') || '',
       google_signed: false,
     };
     let apiCall = signUPAPICall(signUpData);
@@ -62,7 +62,7 @@ const SignupForm = () => {
       email: googleToken.email,
       first_name: googleToken.given_name,
       last_name: googleToken.family_name,
-      fcm_token: localStorage.getItem("ct"),
+      fcm_token: localStorage.getItem('ct'),
       google_signed: true,
     };
     let apiCall = signUPAPICall(signUpData);
@@ -76,7 +76,7 @@ const SignupForm = () => {
   };
 
   const handleGoogleFailure = (error) => {
-    console.error("Google Login Failed:", error);
+    console.error('Google Login Failed:', error);
   };
 
   const handleTermsCheckbox = (e) => {
@@ -85,7 +85,7 @@ const SignupForm = () => {
 
   return (
     <React.Fragment>
-      {loader && <TextLoader />}
+      {loader && <Loader />}
       <ToastContainer ref={toastRef} />
       <div className="signup-page border w-full overflow-y-scroll pt-10 pb-10">
         <div className="signup-container border-2">
@@ -104,8 +104,8 @@ const SignupForm = () => {
               <input
                 type="text"
                 id="firstname"
-                {...register("firstname", {
-                  required: "FirstName is required",
+                {...register('firstname', {
+                  required: 'FirstName is required',
                 })}
                 placeholder="FirstName"
               />
@@ -118,7 +118,7 @@ const SignupForm = () => {
               <input
                 type="text"
                 id="lastname"
-                {...register("lastname", { required: "LastName is required" })}
+                {...register('lastname', { required: 'LastName is required' })}
                 placeholder="LastName"
               />
               {errors.lastname && (
@@ -131,11 +131,11 @@ const SignupForm = () => {
               <input
                 type="email"
                 id="email"
-                {...register("email", {
-                  required: "Email ID is required",
+                {...register('email', {
+                  required: 'Email ID is required',
                   pattern: {
                     value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message: "Invalid email format",
+                    message: 'Invalid email format',
                   },
                 })}
                 placeholder="Email ID"
@@ -150,17 +150,17 @@ const SignupForm = () => {
               <input
                 type="password"
                 id="password"
-                {...register("password", {
-                  required: "Password is required",
+                {...register('password', {
+                  required: 'Password is required',
                   minLength: {
                     value: 8,
-                    message: "Password must be at least 8 characters long",
+                    message: 'Password must be at least 8 characters long',
                   },
                   pattern: {
                     value:
                       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                     message:
-                      "Password must contain uppercase, lowercase, number, and special character",
+                      'Password must contain uppercase, lowercase, number, and special character',
                   },
                 })}
                 placeholder="Password"
@@ -182,15 +182,15 @@ const SignupForm = () => {
                 onChange={handleTermsCheckbox}
               />
               <label htmlFor="termsCheckbox">
-                I accept the{" "}
+                I accept the{' '}
                 <a
                   href="/terms-conditions"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   Terms & Conditions
-                </a>{" "}
-                and{" "}
+                </a>{' '}
+                and{' '}
                 <a href="/privacy" target="_blank" rel="noopener noreferrer">
                   Privacy Policy
                 </a>
@@ -200,8 +200,8 @@ const SignupForm = () => {
               type="submit"
               className={
                 isCaptchaValid && isTermsAccepted
-                  ? "signup-btn"
-                  : "disabled-btn"
+                  ? 'signup-btn'
+                  : 'disabled-btn'
               }
               disabled={!isCaptchaValid && isTermsAccepted}
             >

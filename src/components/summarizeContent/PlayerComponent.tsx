@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import ReactPlayer from "react-player";
+import React, { useState, useEffect } from 'react';
+import ReactPlayer from 'react-player';
 import {
   FaPlay,
   FaPause,
@@ -10,12 +10,12 @@ import {
   FaCompressAlt,
   FaFastForward,
   FaFastBackward,
-} from "react-icons/fa";
-import Navbar from "../navbar/Navbar";
-import Footer from "../footer/footer";
-import "./PlayerComponent.scss";
-import { useLocation } from "react-router-dom";
-import TextLoader from "../customLoader/Loader";
+} from 'react-icons/fa';
+import Navbar from '../navbar/Navbar';
+import Footer from '../footer/footer';
+import './PlayerComponent.scss';
+import { useLocation } from 'react-router-dom';
+import Loader from '../customLoader/Loader';
 
 const PlayerComponent = () => {
   const location = useLocation();
@@ -34,19 +34,19 @@ const PlayerComponent = () => {
   const controlsTimeout = React.useRef<number | null>(null);
 
   const handleDownload = async () => {
-    if (!videoUrl || videoUrl === "#") {
-      alert("Download link not available.");
+    if (!videoUrl || videoUrl === '#') {
+      alert('Download link not available.');
       return;
     }
 
     try {
       const response = await fetch(videoUrl);
-      if (!response.ok) throw new Error("Network response was not ok");
+      if (!response.ok) throw new Error('Network response was not ok');
 
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
+      const link = document.createElement('a');
       link.href = blobUrl;
       link.download = title;
       document.body.appendChild(link);
@@ -55,8 +55,8 @@ const PlayerComponent = () => {
 
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
-      console.error("Download failed:", error);
-      alert("Failed to download the video.");
+      console.error('Download failed:', error);
+      alert('Failed to download the video.');
     }
   };
 
@@ -134,19 +134,19 @@ const PlayerComponent = () => {
   useEffect(() => {
     resetControlsTimeout();
     const handleUserActivity = () => resetControlsTimeout();
-    containerRef.current?.addEventListener("mousemove", handleUserActivity);
-    containerRef.current?.addEventListener("touchstart", handleUserActivity);
+    containerRef.current?.addEventListener('mousemove', handleUserActivity);
+    containerRef.current?.addEventListener('touchstart', handleUserActivity);
 
     return () => {
       if (controlsTimeout.current) {
         clearTimeout(controlsTimeout.current);
       }
       containerRef.current?.removeEventListener(
-        "mousemove",
+        'mousemove',
         handleUserActivity
       );
       containerRef.current?.removeEventListener(
-        "touchstart",
+        'touchstart',
         handleUserActivity
       );
     };
@@ -154,16 +154,16 @@ const PlayerComponent = () => {
 
   return (
     <React.Fragment>
-      {isLoading && <TextLoader />}
+      {isLoading && <Loader />}
       <div className="page-container">
         <Navbar />
         <div className="player-container relative" ref={containerRef}>
           <button
             onClick={toggleFullscreen}
             className={`fullscreen-btn ${
-              showControls ? "visible" : "hidden"
+              showControls ? 'visible' : 'hidden'
             } bg-[#f4f4f4] absolute top-10 right-10 z-10 p-2`}
-            aria-label={isFullscreen ? "Exit Fullscreen" : "Enter Fullscreen"}
+            aria-label={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
           >
             {isFullscreen ? (
               <FaCompressAlt size={30} />
@@ -185,7 +185,7 @@ const PlayerComponent = () => {
             />
             <div
               className={`video-controls ${
-                showControls ? "visible" : "hidden"
+                showControls ? 'visible' : 'hidden'
               }`}
             >
               <div className="flex justify-between w-full items-center">
@@ -242,7 +242,7 @@ const PlayerComponent = () => {
                   aria-label="Video Progress"
                 />
                 <span className="progress-time">
-                  {new Date(currentTime * 1000).toISOString().substr(14, 5)} /{" "}
+                  {new Date(currentTime * 1000).toISOString().substr(14, 5)} /{' '}
                   {new Date(duration * 1000).toISOString().substr(14, 5)}
                 </span>
               </div>
