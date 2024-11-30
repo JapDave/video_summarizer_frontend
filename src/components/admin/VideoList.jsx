@@ -4,10 +4,14 @@ import DataTable from 'react-data-table-component';
 import { truncateTitle } from '../../utils/TruncateString';
 import { authAPI } from '../../api';
 import { deleteVideoFromAdmin } from '../../api/auth';
+import { useRef } from 'react';
+import ToastContainer from '../customToaster/ToastContainer';
+import { toast } from 'react-hot-toast';
 
 const { Search } = Input;
 
 const VideoPlayListTable = ({ data, getStripePlansHandler }) => {
+  const toastRef = useRef();
   const [sortedData, setSortedData] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [loadingIds, setLoadingIds] = useState({});
@@ -187,10 +191,7 @@ const VideoPlayListTable = ({ data, getStripePlansHandler }) => {
         try {
           await deleteVideoFromAdmin(id, true);
           toast.success('Video has been deleted successfully.');
-
-          setSortedData((prevData) =>
-            prevData.filter((video) => video.id !== id)
-          );
+          close();
         } catch (error) {
           console.error('Error deleting video:', error);
           toast.error('An error occurred while deleting the video.');
@@ -207,6 +208,7 @@ const VideoPlayListTable = ({ data, getStripePlansHandler }) => {
   return (
     sortedData && (
       <div className="rounded-lg shadow-md bg-white p-4">
+        <ToastContainer ref={toastRef} />
         <div className="mb-4 flex justify-between items-center">
           <h2 className="text-xl font-bold text-gray-800">Video List</h2>
           <Search
