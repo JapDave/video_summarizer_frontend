@@ -3,15 +3,21 @@ import { Modal, Tooltip, Input } from 'antd';
 import DataTable from 'react-data-table-component';
 import { truncateTitle } from '../../utils/TruncateString';
 import AddPlanForm from './AddPlanForm';
+import EditPlanForm from './EditPlanForm';
 
 const { Search } = Input;
 
-const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
+const PlanAndSubscriptionTable = ({
+  data,
+  getStripePlansHandler,
+  getPlansHandler,
+}) => {
   console.log('🚀 ~ PlanAndSubscriptionTable ~ data:', data);
   const [sortedData, setSortedData] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [modalOpen, setModalOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState();
+  const [addModalOpen, setAddModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
 
   // Sort data
   useEffect(() => {
@@ -52,18 +58,8 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
       sortable: true,
     },
     {
-      name: 'Currency',
-      selector: (row) => row.currency ?? '-',
-      sortable: true,
-    },
-    {
       name: 'Amount',
       selector: (row) => (row.amount ? `$${row.amount}` : '-'),
-      sortable: true,
-    },
-    {
-      name: 'Interval',
-      selector: (row) => row.interval ?? '-',
       sortable: true,
     },
     {
@@ -154,6 +150,22 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
       name: 'Created At',
       selector: (row) => new Date(row.created_at).toLocaleDateString() ?? '-',
       sortable: true,
+    },
+    {
+      name: 'Action',
+      cell: (row) => (
+        <button
+          className="p-2 bg-blue-600 rounded text-white text-xs w-[80px]"
+          onClick={() => {
+            setEditModalOpen(true), setSelectedRow(row);
+          }}
+        >
+          Edit
+        </button>
+      ),
+      button: true,
+      ignoreRowClick: true,
+      width: '120px',
     },
   ];
 
@@ -249,10 +261,10 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
           defaultSortFieldId="Status"
           selectableRowsHighlight
         />
-        {modalOpen && (
+        {addModalOpen && (
           <Modal
-            open={modalOpen}
-            onCancel={() => setModalOpen(false)}
+            open={addModalOpen}
+            onCancel={() => setAddModalOpen(false)}
             footer={null}
             destroyOnClose
             width={656}
@@ -261,12 +273,35 @@ const PlanAndSubscriptionTable = ({ data, getStripePlansHandler }) => {
             style={{ backgroundColor: '#fafafc' }}
           >
             <AddPlanForm
-              setShowModal={setModalOpen}
+              setShowModal={setAddModalOpen}
+              getPlansHandler={getPlansHandler}
               // getStripePlansHandler={getStripePlansHandler}
               // selectedData={selectedRow!}
             />
           </Modal>
         )}
+        <div className="mt-16">
+          {editModalOpen && (
+            <Modal
+              open={editModalOpen}
+              onCancel={() => setEditModalOpen(false)}
+              footer={null}
+              destroyOnClose
+              width={656}
+              centered
+              className="font-poppins bg-[#fafafc]"
+              style={{ backgroundColor: '#fafafc' }}
+            >
+              <EditPlanForm
+                setShowEditModal={setEditModalOpen}
+                planData={selectedRow}
+                getPlansHandler={getPlansHandler}
+                // getStripePlansHandler={getStripePlansHandler}
+                // selectedData={selectedRow!}
+              />
+            </Modal>
+          )}
+        </div>
       </div>
     )
   );

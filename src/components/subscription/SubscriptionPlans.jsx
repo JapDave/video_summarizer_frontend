@@ -1,11 +1,11 @@
-import { ChangeEvent, useCallback, useEffect, useState } from "react";
-import { Modal } from "antd";
-import blackTickIcon from "../../assets/svg/black-tick-icon.svg";
-import haveCouponImg from "../../assets/svg/haveCoupon.svg";
-import PaymentForm from "../admin/PaymentForm";
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { Modal } from 'antd';
+import blackTickIcon from '../../assets/svg/black-tick-icon.svg';
+import haveCouponImg from '../../assets/svg/haveCoupon.svg';
+import PaymentForm from '../admin/PaymentForm';
 
 const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
-  console.log("🚀 ~ data:", data);
+  console.log('🚀 ~ data:', data);
   // *************************************************************
   // NOTE: Define Variables
   // *************************************************************
@@ -13,8 +13,8 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [, setIsCouponLoading] = useState(false);
-  const [coupon, setCoupon] = useState("");
-  const [btnText, setBtnText] = useState("Upgrade");
+  const [coupon, setCoupon] = useState('');
+  const [btnText, setBtnText] = useState('Upgrade');
   const [hovered, setHovered] = useState(false);
   const [couponData, setCouponData] = useState(null);
   const [haveCoupon, setHaveCoupon] = useState(false);
@@ -266,11 +266,11 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   return (
     <div
       className={`bg-[#FFFFFF] w-96 ${
-        hovered ? "gradient-border" : ""
+        hovered ? 'gradient-border' : ''
       } smallPc:px-4 smallPc:py-4 border border-[#ECECEC] flex gap-y-7 flex-col justify-start rounded-md px-4 py-4 text-[#000]`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ cursor: "pointer" }}
+      style={{ cursor: 'pointer' }}
     >
       <div className="flex flex-col items-start gap-y-2 gap-x-2 smallPc:gap-y-1">
         <label className="text-[24px] font-800 font-poppins">{data.name}</label>
@@ -312,7 +312,7 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
           <li className="flex items-center justify-start gap-x-2">
             <img src={blackTickIcon} alt="tick-icon" className="h-4 w-4" />
             <span className="smallPc:text-xs text-sm">
-              Watermarking: {data.watermarking ? "Enabled" : "Disabled"}
+              Watermarking: {data.watermarking ? 'Enabled' : 'Disabled'}
             </span>
           </li>
           <li className="flex items-center justify-start gap-x-2">
@@ -364,10 +364,10 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
         <button
           className={`${
             data.current_plan
-              ? "text-[#ffffff] bg-gradient-to-b from-[#1104F3] to-[#0EDEF9] opacity-75"
+              ? 'text-[#ffffff] bg-gradient-to-b from-[#1104F3] to-[#0EDEF9] opacity-75'
               : hovered
-              ? "text-[#ffffff] bg-[#051b8d]"
-              : "text-[#ffffff] bg-[#051b8d]"
+              ? 'text-[#ffffff] bg-[#051b8d]'
+              : 'text-[#ffffff] bg-[#051b8d]'
           } smallPc:h-10 rounded-md h-10 font-400 text-[16px] font-poppins flex justify-center items-center`}
           // onClick={handleClick}
           onClick={() => setShowModal(true)}
@@ -379,7 +379,7 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
         <Modal
           visible={showModal}
           onCancel={closeModal}
-          okButtonProps={{ style: { backgroundColor: "white" } }}
+          okButtonProps={{ style: { backgroundColor: 'white' } }}
           footer={null}
           destroyOnClose
           width={656}

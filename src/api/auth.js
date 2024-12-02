@@ -151,3 +151,27 @@ export const deleteVideoFromAdmin = async (id, is_deleted) => {
     throw error;
   }
 };
+
+export const addPlan = async (data) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/api/v1/users/create-plan`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const editPlan = async (data, id) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/api/v1/users/update-plan/${id}`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

@@ -15,6 +15,7 @@ const PlanAndSubscription = () => {
   const token = localStorage.getItem('accessToken');
   const plansList = useSelector((state) => state.admin.plansList);
   const [modalOpen, setModalOpen] = useState(false);
+  const [warningModal, setWaringModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const getPlansHandler = async () => {
@@ -60,8 +61,14 @@ const PlanAndSubscription = () => {
         <div className="flex gap-2 items-center">
           <Button
             data-cy="add-plan"
-            disabled={numberOfActivePlans >= 3}
-            onClick={() => setModalOpen(true)}
+            // disabled={numberOfActivePlans >= 3}
+            onClick={() => {
+              if (numberOfActivePlans >= 3) {
+                setWaringModal(true);
+              } else {
+                setModalOpen(true);
+              }
+            }}
             className={`rounded-lg h-12 w-15 bg-blue-600 text-white`}
           >
             Add Plan
@@ -86,9 +93,28 @@ const PlanAndSubscription = () => {
           />
         </Modal>
       )}
+      {warningModal && (
+        <Modal
+          open={warningModal}
+          onCancel={() => setWaringModal(false)}
+          okButtonProps={{ style: { backgroundColor: '#4285F4' } }}
+          footer={null}
+          destroyOnClose
+          width={656}
+          className="font-poppins bg-[#fafafc] mt-10 mb-4 rounded-xl"
+          style={{ backgroundColor: '#fafafc' }}
+          centered
+        >
+          <h1 className="text-[20px] text-red-600">
+            You can add a maximum of three plans. Please update an existing plan
+            if needed.
+          </h1>
+        </Modal>
+      )}
       <PlanAndSubscriptionTable
         getStripePlansHandler={() => {}}
         data={plansList}
+        getPlansHandler={getPlansHandler}
       />
     </div>
   );
