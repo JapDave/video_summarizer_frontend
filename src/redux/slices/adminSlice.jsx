@@ -11,6 +11,7 @@ const initialState = {
 
   // USER
   usersPlansList: null,
+  currentPlan: null,
 };
 
 const adminSlice = createSlice({
@@ -45,6 +46,10 @@ const adminSlice = createSlice({
       const data = action.payload;
       state.usersPlansList = data;
     },
+    setCurrentPlan: (state, action) => {
+      const data = action.payload;
+      state.currentPlan = data;
+    },
   },
 });
 
@@ -59,5 +64,6 @@ export const {
 
   // USER
   setUserPlansList,
+  setCurrentPlan,
 } = adminSlice.actions;
 export default adminSlice.reducer;

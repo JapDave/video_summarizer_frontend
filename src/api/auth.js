@@ -175,3 +175,40 @@ export const editPlan = async (data, id) => {
     throw error;
   }
 };
+
+export const createSubscription = async (data) => {
+  try {
+    const response = await axios.post(
+      `${API_BASE_URL}/api/v1/payments/create-sam-subscription`,
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error creating subscription:', error);
+    throw error;
+  }
+};
+
+export const upgradeSubscription = async (price_id) => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/api/v1/payments/update-subscription`,
+      { price_id: price_id }
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const cancelSubscription = async () => {
+  try {
+    const response = await axios.put(
+      `${API_BASE_URL}/api/v1/payments/cancel-subscription`,
+      null
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};

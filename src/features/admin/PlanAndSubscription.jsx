@@ -17,6 +17,7 @@ const PlanAndSubscription = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [warningModal, setWaringModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [activePlansCount, setActivePlansCount] = useState(0);
 
   const getPlansHandler = async () => {
     setLoading(true);
@@ -33,7 +34,10 @@ const PlanAndSubscription = () => {
         }
       );
       const data = await response.json();
+      console.log('🚀 ~ getPlansHandler ~ data:', data);
       dispatch(setPlansList(data));
+      const activePlans = data.filter((plan) => plan.is_active).length;
+      setActivePlansCount(activePlans);
       setLoading(false);
     } catch (error) {
       console.error('Error fetching plans:', error);
@@ -63,7 +67,7 @@ const PlanAndSubscription = () => {
             data-cy="add-plan"
             // disabled={numberOfActivePlans >= 3}
             onClick={() => {
-              if (numberOfActivePlans >= 3) {
+              if (activePlansCount >= 3) {
                 setWaringModal(true);
               } else {
                 setModalOpen(true);
@@ -89,6 +93,7 @@ const PlanAndSubscription = () => {
         >
           <AddPlanForm
             setShowModal={setModalOpen}
+            getPlansHandler={getPlansHandler}
             // getStripePlansHandler={getStripePlansHandler}
           />
         </Modal>
@@ -106,8 +111,7 @@ const PlanAndSubscription = () => {
           centered
         >
           <h1 className="text-[20px] text-red-600">
-            You can add a maximum of three plans. Please update an existing plan
-            if needed.
+            Please inactive oneoff plan to add new one.
           </h1>
         </Modal>
       )}

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import React, { useState } from 'react';
+import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-const PaymentForm = ({ onPaymentSuccess }) => {
+const PaymentForm = ({ onPaymentSubmit }) => {
   const stripe = useStripe();
   const elements = useElements();
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,13 +17,13 @@ const PaymentForm = ({ onPaymentSuccess }) => {
     }
 
     setIsProcessing(true);
-    setErrorMessage("");
+    setErrorMessage('');
 
     const cardElement = elements.getElement(CardElement);
 
     try {
       const { paymentMethod, error } = await stripe.createPaymentMethod({
-        type: "card",
+        type: 'card',
         card: cardElement,
         billing_details: {
           name,
@@ -36,11 +36,11 @@ const PaymentForm = ({ onPaymentSuccess }) => {
         return;
       }
 
-      console.log("PaymentMethod:", paymentMethod);
-      onPaymentSuccess(paymentMethod);
+      console.log('PaymentMethod:', paymentMethod);
+      onPaymentSubmit(paymentMethod);
       setIsProcessing(false);
     } catch (error) {
-      setErrorMessage("Something went wrong. Please try again.");
+      setErrorMessage('Something went wrong. Please try again.');
       setIsProcessing(false);
     }
   };
@@ -84,14 +84,14 @@ const PaymentForm = ({ onPaymentSuccess }) => {
             options={{
               style: {
                 base: {
-                  fontSize: "16px",
-                  color: "#424770",
-                  "::placeholder": {
-                    color: "#aab7c4",
+                  fontSize: '16px',
+                  color: '#424770',
+                  '::placeholder': {
+                    color: '#aab7c4',
                   },
                 },
                 invalid: {
-                  color: "#9e2146",
+                  color: '#9e2146',
                 },
               },
             }}
@@ -107,10 +107,10 @@ const PaymentForm = ({ onPaymentSuccess }) => {
         type="submit"
         disabled={!stripe || isProcessing}
         className={`w-full bg-[#051b8d] hover:bg-indigo-700 text-white text-sm font-medium py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-          isProcessing ? "opacity-70 cursor-not-allowed" : ""
+          isProcessing ? 'opacity-70 cursor-not-allowed' : ''
         }`}
       >
-        {isProcessing ? "Processing..." : "Pay Now"}
+        {isProcessing ? 'Processing...' : 'Pay Now'}
       </button>
     </form>
   );

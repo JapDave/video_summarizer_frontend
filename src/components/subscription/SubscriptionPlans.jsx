@@ -1,23 +1,29 @@
-import { ChangeEvent, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Modal } from 'antd';
+import { useSelector } from 'react-redux';
+import ToastContainer from '../customToaster/ToastContainer';
 import blackTickIcon from '../../assets/svg/black-tick-icon.svg';
-import haveCouponImg from '../../assets/svg/haveCoupon.svg';
 import PaymentForm from '../admin/PaymentForm';
+import { useNavigate } from 'react-router-dom';
+import {
+  cancelSubscription,
+  createSubscription,
+  upgradeSubscription,
+} from '../../api/auth';
 
 const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   console.log('🚀 ~ data:', data);
   // *************************************************************
   // NOTE: Define Variables
   // *************************************************************
-  const controller = new AbortController();
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [, setIsCouponLoading] = useState(false);
-  const [coupon, setCoupon] = useState('');
-  const [btnText, setBtnText] = useState('Upgrade');
+  const [btnText, setBtnText] = useState('Select Plan');
   const [hovered, setHovered] = useState(false);
-  const [couponData, setCouponData] = useState(null);
-  const [haveCoupon, setHaveCoupon] = useState(false);
+  const toastRef = useRef();
+
+  const currentPlan = useSelector((state) => state.admin.currentPlan);
 
   // *************************************************************
   // NOTE: API Configuration
@@ -27,30 +33,23 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   // NOTE: Helper Methods
   // *************************************************************
   const handleClick = async () => {
-    // if (length - 1 === index && type === 'tally') {
-    //   router.push('/contact');
-    //   return;
-    // }
-    // if (
-    //   data?.current_plan ||
-    //   ((type === 'sam' || type === 'tally') &&
-    //     btnText === 'Downgrade' &&
-    //     !(data as Plan).is_stripe_plan)
-    // ) {
-    //   cancelSubscriptionHandler();
-    //   return;
-    // }
-    // if (
-    //   (type === 'sam' && !currentSamPlan) ||
-    //   (type === 'tally' && !currentTallyPlan) ||
-    //   (type === 'sam' && !currentSamPlan.is_stripe_plan) ||
-    //   (type === 'tally' && !currentTallyPlan.is_stripe_plan)
-    // ) {
-    //   setShowModal(true);
-    // } else {
-    //   console.log('🚀 ~ handleClick ~ data?.price_id:', data?.price_id);
-    //   await upgradePlan(data?.price_id);
-    // }
+    if (length - 1 === index) {
+      navigate('/contactus');
+      return;
+    }
+    if (
+      data?.current_plan ||
+      (btnText === 'Downgrade' && !data.is_stripe_plan)
+    ) {
+      cancelSubscriptionHandler();
+      return;
+    }
+    if (currentPlan || !currentPlan?.is_stripe_plan) {
+      setShowModal(true);
+    } else {
+      console.log('🚀 ~ handleClick ~ data?.price_id:', data?.price_id);
+      await upgradePlan(data?.price_id);
+    }
   };
 
   const closeModal = () => {
@@ -58,164 +57,181 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   };
 
   const buttonText = useCallback(() => {
-    // if (length - 1 === index && type === 'tally') {
-    //   setBtnText('Quote');
-    //   return;
-    // }
-    // if (
-    //   (type === 'sam' && !currentSamPlan) ||
-    //   (type === 'tally' && !currentTallyPlan)
-    // ) {
-    //   setBtnText(
-    //     length - 1 === index && type === 'tally' ? 'Quote' : 'Select Plan'
-    //   );
-    // } else if (data?.current_plan) {
-    //   setBtnText(
-    //     (type === 'sam' && (data as Plan).is_stripe_plan) ||
-    //       (type === 'tally' && (data as TallyPlan).is_stripe_plan)
-    //       ? 'Current Plan'
-    //       : 'Current Plan'
-    //   );
-    // } else if (
-    //   data?.amount >
-    //   (type === 'sam' ? currentSamPlan.amount : currentTallyPlan.amount)
-    // ) {
-    //   setBtnText('Upgrade');
-    // } else if (
-    //   data?.amount <=
-    //   (type === 'sam' ? currentSamPlan.amount : currentTallyPlan.amount)
-    // ) {
-    //   setBtnText('Downgrade');
-    // }
-    //   }, [currentSamPlan, currentTallyPlan, data, index, length, type]);
-  }, []);
+    if (length - 1 === index) {
+      setBtnText('Quote');
+      return;
+    }
+    if (currentPlan) {
+      setBtnText(length - 1 === index ? 'Quote' : 'Select Plan');
+    } else if (data?.current_plan) {
+      setBtnText(data.is_stripe_plan ? 'Current Plan' : 'Current Plan');
+    } else if (data?.amount > currentPlan?.amount) {
+      setBtnText('Upgrade');
+    } else if (data?.amount <= currentPlan?.amount) {
+      setBtnText('Downgrade');
+    }
+  }, [currentPlan, data, index, length]);
 
-  const couponInputChange = (e) => {
-    setCoupon(e.target.value);
+  // const cancelSubscriptionHandler = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     let response;
+  //     if (type === 'sam') {
+  //       response = await cancelSamSubscription(null, api_url, router, dispatch);
+  //     } else {
+  //       response = await cancelTallySubscription(
+  //         null,
+  //         api_url,
+  //         router,
+  //         dispatch
+  //       );
+  //     }
+  //     if (response?.ok) {
+  //       if (type === 'sam') {
+  //         dispatch(setSamBillingHistory(null));
+  //       } else {
+  //         dispatch(setTallyBillingHistory(null));
+  //       }
+  //       getPlans(controller.signal);
+  //       onUpdate();
+  //       setIsLoading(false);
+  //       setShowModal(false);
+  //     } else {
+  //       setIsLoading(false);
+  //       const res = response?.json();
+  //       const responseData: FailedResponse = await res;
+  //       toast.error(responseData.detail);
+  //     }
+  //   } catch (error) {
+  //     toast.error('Error in cancel subscription');
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // const createSubscriptionHandler = async (payloadData: {
+  //   payment_method: string;
+  // }) => {
+  //   try {
+  //     setIsLoading(true);
+  //     let response;
+  //     if (type === 'sam') {
+  //       response = await createSamSubscription(
+  //         {
+  //           price_id: data?.price_id,
+  //           payment_method: payloadData.payment_method,
+  //           coupon_id: coupon,
+  //         },
+  //         api_url,
+  //         router,
+  //         dispatch
+  //       );
+  //     } else {
+  //       response = await createTallySubscription(
+  //         {
+  //           price_id: data?.price_id,
+  //           payment_method: payloadData.payment_method,
+  //           coupon_id: coupon,
+  //         },
+  //         api_url,
+  //         router,
+  //         dispatch
+  //       );
+  //     }
+
+  //     if (response?.ok) {
+  //       setShowModal(false);
+  //       getPlans(controller.signal);
+  //       onUpdate();
+  //       toastRef.current.addToast('Subscription created successfully');
+  //       if (type === 'sam') {
+  //         dispatch(setProductType({ productType: 1 }));
+  //       } else if (type === 'tally') {
+  //         dispatch(setProductType({ productType: 2 }));
+  //       }
+  //       setIsLoading(false);
+  //       router.push('/dashboard');
+  //     } else {
+  //       const res = response?.json();
+  //       const responseData: FailedResponse = await res;
+  //       toast.error(responseData.detail);
+  //     }
+  //   } catch (error) {
+  //     toast.error('Error in create subscription');
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  const createSubscriptionHandler = async (payloadData) => {
+    console.log('🚀 ~ createSubscriptionHandler ~ payloadData:', payloadData);
+    try {
+      setIsLoading(true);
+
+      const response = await createSubscription({
+        price_id: data?.price_id,
+        payment_method: payloadData?.id,
+      });
+
+      if (response) {
+        setShowModal(false);
+        getPlans();
+        onUpdate();
+        toastRef.current.addToast('Subscription created successfully');
+      } else {
+        toastRef.current.addToast('Failed to create subscription');
+      }
+    } catch (error) {
+      console.error('Error in create subscription:', error);
+      toastRef.current.addToast('Error in create subscription');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // coupon retrieve
-  const verifyCouponHandler = async () => {
-    // try {
-    //   setIsCouponLoading(true);
-    //   const response = await retrieveCoupon(
-    //     {
-    //       coupon_id: coupon,
-    //       price_id: data?.price_id,
-    //       product: type.toUpperCase(),
-    //     },
-    //     api_url,
-    //     router,
-    //     dispatch
-    //   );
-    //   const res = response?.json();
-    //   if (response?.ok) {
-    //     const response = await res;
-    //     if ('is_valid' in response && response.is_valid) {
-    //       setCouponData(response);
-    //     } else {
-    //       toast.error('Coupon expired or is invalid');
-    //     }
-    //   } else {
-    //     setCouponData(null);
-    //     const responseData: FailedResponse = await res;
-    //     toast.error(responseData.detail);
-    //   }
-    //   setIsCouponLoading(false);
-    // } catch (error) {
-    //   setIsCouponLoading(false);
-    //   toast.error('Error in retrieve coupon');
-    // }
+  const upgradePlan = async (priceId) => {
+    try {
+      setIsLoading(true);
+
+      const payload = {
+        price_id: priceId,
+      };
+
+      const response = await upgradeSubscription(JSON.stringify(payload));
+      if (response) {
+        const responseData = await response.json();
+        getPlans();
+        onUpdate();
+        toastRef.current.addToast('Subscription updated successfully');
+      } else {
+        const errorData = await response.json();
+        toastRef.current.addToast('Error updating subscription');
+      }
+    } catch (error) {
+      console.error('Error in subscription update:', error);
+      toastRef.current.addToast('Error in subscription update');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const cancelSubscriptionHandler = async () => {
-    // try {
-    //   setIsLoading(true);
-    //   let response;
-    //   if (type === 'sam') {
-    //     response = await cancelSamSubscription(null, api_url, router, dispatch);
-    //   } else {
-    //     response = await cancelTallySubscription(
-    //       null,
-    //       api_url,
-    //       router,
-    //       dispatch
-    //     );
-    //   }
-    //   if (response?.ok) {
-    //     if (type === 'sam') {
-    //       dispatch(setSamBillingHistory(null));
-    //     } else {
-    //       dispatch(setTallyBillingHistory(null));
-    //     }
-    //     getPlans(controller.signal);
-    //     onUpdate();
-    //     setIsLoading(false);
-    //     setShowModal(false);
-    //   } else {
-    //     setIsLoading(false);
-    //     const res = response?.json();
-    //     const responseData: FailedResponse = await res;
-    //     toast.error(responseData.detail);
-    //   }
-    // } catch (error) {
-    //   toast.error('Error in cancel subscription');
-    //   setIsLoading(false);
-    // }
+    try {
+      setIsLoading(true);
+      const response = await cancelSubscription();
+      if (response) {
+        getPlans();
+        onUpdate();
+        toastRef.current.addToast('Subscription canceled successfully');
+        setShowModal(false);
+      } else {
+        toastRef.current.addToast('Failed to cancel subscription');
+      }
+    } catch (error) {
+      console.error('Error in cancel subscription:', error);
+      toastRef.current.addToast('Error in cancel subscription');
+    } finally {
+      setIsLoading(false);
+    }
   };
-
-  //   const createSubscriptionHandler = async (payloadData: {
-  //     payment_method: string;
-  //   }) => {
-  //     try {
-  //       setIsLoading(true);
-  //       let response;
-  //       if (type === 'sam') {
-  //         response = await createSamSubscription(
-  //           {
-  //             price_id: data?.price_id,
-  //             payment_method: payloadData.payment_method,
-  //             coupon_id: coupon,
-  //           },
-  //           api_url,
-  //           router,
-  //           dispatch
-  //         );
-  //       } else {
-  //         response = await createTallySubscription(
-  //           {
-  //             price_id: data?.price_id,
-  //             payment_method: payloadData.payment_method,
-  //             coupon_id: coupon,
-  //           },
-  //           api_url,
-  //           router,
-  //           dispatch
-  //         );
-  //       }
-
-  //       if (response?.ok) {
-  //         setShowModal(false);
-  //         getPlans(controller.signal);
-  //         onUpdate();
-  //         toast.success('Subscription created successfully');
-  //         if (type === 'sam') {
-  //           dispatch(setProductType({ productType: 1 }));
-  //         } else if (type === 'tally') {
-  //           dispatch(setProductType({ productType: 2 }));
-  //         }
-  //         setIsLoading(false);
-  //         router.push('/dashboard');
-  //       } else {
-  //         const res = response?.json();
-  //         const responseData: FailedResponse = await res;
-  //         toast.error(responseData.detail);
-  //       }
-  //     } catch (error) {
-  //       toast.error('Error in create subscription');
-  //       setIsLoading(false);
-  //     }
-  //   };
 
   //   const upgradePlan = async (priceId: string) => {
   //     try {
@@ -240,7 +256,7 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   //       if (response && response.ok) {
   //         getPlans(controller.signal);
   //         onUpdate();
-  //         toast.success('Subscription updated successfully');
+  //         toastRef.current.addToast('Subscription updated successfully');
   //       } else {
   //         const res = response?.json();
   //         const responseData: FailedResponse = await res;
@@ -256,9 +272,9 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   // *************************************************************
   // NOTE: Life Cycle Hooks
   // *************************************************************
-  //   useEffect(() => {
-  //     buttonText();
-  //   }, [buttonText, type]);
+  useEffect(() => {
+    buttonText();
+  }, [buttonText]);
 
   // *************************************************************
   // NOTE: Render Method
@@ -272,6 +288,7 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
       onMouseLeave={() => setHovered(false)}
       style={{ cursor: 'pointer' }}
     >
+      <ToastContainer ref={toastRef} />
       <div className="flex flex-col items-start gap-y-2 gap-x-2 smallPc:gap-y-1">
         <label className="text-[24px] font-800 font-poppins">{data.name}</label>
         <label className="text-xxs font-400 font-poppins capitalize">
@@ -362,17 +379,24 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
 
       <div className="flex flex-1 gap-y-3 justify-end flex-col w-full">
         <button
+          disabled={isLoading || (data.amount === 0 && btnText !== 'Downgrade')}
           className={`${
             data.current_plan
-              ? 'text-[#ffffff] bg-gradient-to-b from-[#1104F3] to-[#0EDEF9] opacity-75'
+              ? hovered
+                ? 'text-white-800 opacity-75 bg-gradient-to-b from-[#1104F3] to-[#0EDEF9]'
+                : 'text-white-800 opacity-75 bg-gradient-to-b from-[#1104F3] to-[#0EDEF9] '
+              : length - 1 === index
+              ? 'bg-transparent border border-[#1090F7]'
               : hovered
-              ? 'text-[#ffffff] bg-[#051b8d]'
-              : 'text-[#ffffff] bg-[#051b8d]'
-          } smallPc:h-10 rounded-md h-10 font-400 text-[16px] font-poppins flex justify-center items-center`}
-          // onClick={handleClick}
-          onClick={() => setShowModal(true)}
+              ? 'text-white-800 bg-[#1090F7]'
+              : 'text-white-800 bg-[#1090F7]'
+          }  smallPc:h-10 rounded-md text-[10px]  h-10 font-400 font-poppins  flex justify-center items-center`}
+          onClick={handleClick}
         >
-          <span>Select Plan</span>
+          <span className="mr-1">
+            {isLoading && currentPlan ? 'Processing...' : btnText}
+          </span>
+          {/* {isLoading && currentPlan && <Spinner />} */}
         </button>
       </div>
       {showModal && (
@@ -387,7 +411,7 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
           centered
         >
           <div>
-            <PaymentForm />
+            <PaymentForm onPaymentSubmit={createSubscriptionHandler} />
           </div>
         </Modal>
       )}

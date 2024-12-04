@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Tooltip } from "antd";
-import "./Navbar.scss";
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Tooltip } from 'antd';
+import './Navbar.scss';
 import {
   aggrementImg,
   bellImg,
@@ -12,17 +12,17 @@ import {
   settingImg,
   subscriptionImg,
   adminLogo,
-} from "../../assets/images/Images";
-import notificationJson from "./Notification.json";
-import { useDispatch, useSelector } from "react-redux";
-import { setIsAdmin, setUserData } from "../../redux/slices/adminSlice";
-import { API_BASE_URL } from "../../utils/ENVImport";
-import { truncateTitle } from "../../utils/TruncateString";
+} from '../../assets/images/Images';
+import notificationJson from './Notification.json';
+import { useDispatch, useSelector } from 'react-redux';
+import { setIsAdmin, setUserData } from '../../redux/slices/adminSlice';
+import { API_BASE_URL } from '../../utils/ENVImport';
+import { truncateTitle } from '../../utils/TruncateString';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem('accessToken');
   const dropdownRef = useRef(null);
   const notificationRef = useRef(null);
   const notificationCount = 2;
@@ -35,16 +35,16 @@ const Navbar = () => {
   const [notifications, setNotifications] = useState();
   const userData = useSelector((state) => state.admin.userData);
   let intervalId;
-  console.log("🚀 ~ Navbar ~ userData:", userData);
+  console.log('🚀 ~ Navbar ~ userData:', userData);
 
   const getLoggedInUser = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
-        method: "GET",
+        method: 'GET',
         headers: {
           Token: `${token}`,
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "69420",
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': '69420',
         },
       });
 
@@ -52,16 +52,16 @@ const Navbar = () => {
         const data = await response.json();
         dispatch(setUserData(data));
       } else if (response.status === 401) {
-        console.warn("Unauthorized access. Redirecting to login.");
+        console.warn('Unauthorized access. Redirecting to login.');
         localStorage.clear();
         location.reload();
       } else if (response.status === 404) {
-        console.warn("User not found.");
+        console.warn('User not found.');
       } else {
-        console.warn("Failed to fetch user data. Status:", response.status);
+        console.warn('Failed to fetch user data. Status:', response.status);
       }
     } catch (error) {
-      console.error("Error fetching user:", error);
+      console.error('Error fetching user:', error);
     }
   };
 
@@ -71,11 +71,11 @@ const Navbar = () => {
       const response = await fetch(
         `${API_BASE_URL}/api/v1/users/notifications?is_viewed=${isViewed}`,
         {
-          method: "GET",
+          method: 'GET',
           headers: {
             Token: `${token}`,
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "69420",
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '69420',
           },
         }
       );
@@ -85,10 +85,10 @@ const Navbar = () => {
         setNotificationsResponse(data?.count || 0);
         setNotifications(data?.notifications || []);
       } else {
-        console.error("Failed to fetch notifications:", response.status);
+        console.error('Failed to fetch notifications:', response.status);
       }
     } catch (error) {
-      console.error("Error fetching notifications:", error);
+      console.error('Error fetching notifications:', error);
     } finally {
       setTimeout(() => setIsLoading(false), 5000);
     }
@@ -100,11 +100,11 @@ const Navbar = () => {
       const response = await fetch(
         `${API_BASE_URL}/api/v1/users/clear-notifications`,
         {
-          method: "GET",
+          method: 'GET',
           headers: {
             Token: `${token}`,
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "69420",
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': '69420',
           },
         }
       );
@@ -114,10 +114,10 @@ const Navbar = () => {
         setNotificationsResponse(0);
         setNotifications([]);
       } else {
-        console.error("Failed to clear notifications:", response.status);
+        console.error('Failed to clear notifications:', response.status);
       }
     } catch (error) {
-      console.error("Error clearing notifications:", error);
+      console.error('Error clearing notifications:', error);
     } finally {
       setTimeout(() => setIsLoading(false), 5000);
     }
@@ -146,14 +146,12 @@ const Navbar = () => {
   };
 
   const convertDateFormat = (dateTimeString) => {
-    const [datePart] = dateTimeString.split("T");
+    const [datePart] = dateTimeString.split('T');
     return datePart;
   };
 
   useEffect(() => {
-    if (!token) {
-      navigate("/");
-    } else {
+    if (token) {
       setIsLoading(true);
       getLoggedInUser();
       notificationsAPICall();
@@ -162,7 +160,7 @@ const Navbar = () => {
 
       return () => clearInterval(intervalId);
     }
-  }, [token, navigate]);
+  }, [token]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -197,9 +195,9 @@ const Navbar = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isOpen.notificationFlag, isOpen.profileFlag]);
   return (
@@ -254,16 +252,16 @@ const Navbar = () => {
                                 {notifications.map((item, index) => {
                                   const statuses = [
                                     {
-                                      text: "Processing",
-                                      class: "bg-blue-100 text-blue-700",
+                                      text: 'Processing',
+                                      class: 'bg-blue-100 text-blue-700',
                                     },
                                     {
-                                      text: "Queue",
-                                      class: "bg-yellow-100 text-yellow-700",
+                                      text: 'Queue',
+                                      class: 'bg-yellow-100 text-yellow-700',
                                     },
                                     {
-                                      text: "Summarize",
-                                      class: "bg-green-100 text-green-700",
+                                      text: 'Summarize',
+                                      class: 'bg-green-100 text-green-700',
                                     },
                                   ];
                                   const randomStatus =
@@ -316,11 +314,11 @@ const Navbar = () => {
                             {notifications?.length > 0 && (
                               <div
                                 style={{
-                                  color: "red",
-                                  marginTop: "10px",
-                                  marginBottom: "0px",
-                                  width: "100%",
-                                  textAlign: "end",
+                                  color: 'red',
+                                  marginTop: '10px',
+                                  marginBottom: '0px',
+                                  width: '100%',
+                                  textAlign: 'end',
                                 }}
                               >
                                 <button
@@ -350,7 +348,7 @@ const Navbar = () => {
                         {userData?.first_name}
                       </span>
                       <span
-                        className={`arrow ${isOpen.profileFlag ? "open" : ""}`}
+                        className={`arrow ${isOpen.profileFlag ? 'open' : ''}`}
                       ></span>
                     </div>
 
@@ -378,7 +376,7 @@ const Navbar = () => {
                           <div
                             onClick={() => {
                               dispatch(setIsAdmin(true));
-                              navigate("/admin/usage-analytics");
+                              navigate('/admin/usage-analytics');
                             }}
                             className="profile-menu-item"
                           >
@@ -388,14 +386,14 @@ const Navbar = () => {
                         )}
                         {/* )} */}
                         <div
-                          onClick={() => navigate("/profile")}
+                          onClick={() => navigate('/profile')}
                           className="profile-menu-item"
                         >
                           <img src={profileLogo} alt="" />
                           <span className="item-text">Profile</span>
                         </div>
                         <div
-                          onClick={() => navigate("/subscription")}
+                          onClick={() => navigate('/subscription')}
                           className="profile-menu-item"
                         >
                           <img src={subscriptionImg} alt="" />
@@ -404,7 +402,7 @@ const Navbar = () => {
 
                         <div
                           className="profile-menu-item"
-                          style={{ marginBottom: "2px" }}
+                          style={{ marginBottom: '2px' }}
                         >
                           <img src={logoutImg} alt="" />
                           <span
@@ -422,6 +420,7 @@ const Navbar = () => {
                 <>
                   <a href="/signup">Sign Up</a>
                   <a href="/login">Login</a>
+                  <a href="/pricing">Pricing</a>
                 </>
               )}
             </div>
