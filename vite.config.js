@@ -1,11 +1,12 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  // server: {
-  //   host: "localhost", // Set to 'localhost'
-  //   port: 3000, // Custom port number
-  // },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+  },
+  base: './', // This ensures assets are loaded correctly on S3
 });

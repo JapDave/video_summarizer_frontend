@@ -20,6 +20,7 @@ import Loader from '../customLoader/Loader';
 const PlayerComponent = () => {
   const location = useLocation();
   const { videoUrl, title } = location.state || {};
+  console.log('🚀 ~ PlayerComponent ~ videoUrl:', videoUrl);
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
@@ -43,16 +44,24 @@ const PlayerComponent = () => {
       const response = await fetch(videoUrl);
       if (!response.ok) throw new Error('Network response was not ok');
 
+      // Extract the file name from the URL
+      const fileName = videoUrl.split('/').pop(); // Extracts "output_video_wm.mp4"
       const blob = await response.blob();
-      const blobUrl = window.URL.createObjectURL(blob);
 
+      // Create a Blob URL with the correct MIME type
+      const blobUrl = window.URL.createObjectURL(
+        new Blob([blob], { type: 'video/mp4' })
+      );
+
+      // Create a temporary anchor element to trigger the download
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = title;
+      link.download = fileName; // Use the extracted file name
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
+      // Clean up the Blob URL
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
       console.error('Download failed:', error);

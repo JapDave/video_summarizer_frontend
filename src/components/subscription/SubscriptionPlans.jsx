@@ -57,6 +57,8 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   };
 
   const buttonText = useCallback(() => {
+    console.log('buttonText called', { length, index, currentPlan, data });
+
     if (length - 1 === index) {
       setBtnText('Quote');
       return;
@@ -64,7 +66,8 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
     if (currentPlan) {
       setBtnText(length - 1 === index ? 'Quote' : 'Select Plan');
     } else if (data?.current_plan) {
-      setBtnText(data.is_stripe_plan ? 'Current Plan' : 'Current Plan');
+      console.log('🚀 ~ buttonText ~ data?.current_plan:', data.is_stripe_plan);
+      setBtnText(data.is_stripe_plan ? 'Current Plan' : 'Select Plan');
     } else if (data?.amount > currentPlan?.amount) {
       setBtnText('Upgrade');
     } else if (data?.amount <= currentPlan?.amount) {
@@ -173,8 +176,10 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
 
       if (response) {
         setShowModal(false);
-        getPlans();
         onUpdate();
+        setTimeout(() => {
+          getPlans();
+        }, 3000);
         toastRef.current.addToast('Subscription created successfully');
       } else {
         toastRef.current.addToast('Failed to create subscription');
@@ -198,8 +203,10 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
       const response = await upgradeSubscription(JSON.stringify(payload));
       if (response) {
         const responseData = await response.json();
-        getPlans();
         onUpdate();
+        setTimeout(() => {
+          getPlans();
+        }, 3000);
         toastRef.current.addToast('Subscription updated successfully');
       } else {
         const errorData = await response.json();
@@ -218,8 +225,12 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
       setIsLoading(true);
       const response = await cancelSubscription();
       if (response) {
-        getPlans();
         onUpdate();
+        setTimeout(() => {
+          getPlans();
+          buttonText();
+          window.location.reload();
+        }, 3000);
         toastRef.current.addToast('Subscription canceled successfully');
         setShowModal(false);
       } else {
@@ -274,7 +285,7 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
   // *************************************************************
   useEffect(() => {
     buttonText();
-  }, [buttonText]);
+  }, [buttonText, currentPlan, data, index, length, btnText]);
 
   // *************************************************************
   // NOTE: Render Method
@@ -288,7 +299,9 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
       onMouseLeave={() => setHovered(false)}
       style={{ cursor: 'pointer' }}
     >
-      <ToastContainer ref={toastRef} />
+      <div className="z-9 mt-10">
+        <ToastContainer ref={toastRef} />
+      </div>
       <div className="flex flex-col items-start gap-y-2 gap-x-2 smallPc:gap-y-1">
         <label className="text-[24px] font-800 font-poppins">{data.name}</label>
         <label className="text-xxs font-400 font-poppins capitalize">
@@ -390,7 +403,7 @@ const SubscriptionPlans = ({ data, getPlans, onUpdate, index, length }) => {
               : hovered
               ? 'text-white-800 bg-[#1090F7]'
               : 'text-white-800 bg-[#1090F7]'
-          }  smallPc:h-10 rounded-md text-[10px]  h-10 font-400 font-poppins  flex justify-center items-center`}
+          }  smallPc:h-10 rounded-md text-[10px]  h-10 font-400 text-[14px] text-[#fff] font-poppins  flex justify-center items-center`}
           onClick={handleClick}
         >
           <span className="mr-1">

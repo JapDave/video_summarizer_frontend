@@ -1,25 +1,25 @@
-import React, { useEffect, useRef, useState } from "react";
-import { FaCamera } from "react-icons/fa";
-import { UserLogo } from "../../assets/images/Images";
-import { uploadProfile } from "../../api/auth";
-import "./ProfileSection.scss";
-import ToastContainer from "../customToaster/ToastContainer";
-import { useDispatch, useSelector } from "react-redux";
-import { setUserData } from "../../redux/slices/adminSlice";
-import { useNavigate } from "react-router-dom";
-import { API_BASE_URL } from "../../utils/ENVImport";
+import React, { useEffect, useRef, useState } from 'react';
+import { FaCamera } from 'react-icons/fa';
+import { UserLogo } from '../../assets/images/Images';
+import { uploadProfile } from '../../api/auth';
+import './ProfileSection.scss';
+import ToastContainer from '../customToaster/ToastContainer';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserData } from '../../redux/slices/adminSlice';
+import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../../utils/ENVImport';
 
 const ProfileSection = () => {
   const toastRef = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { userData } = useSelector((state) => state.admin);
-  const token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem('accessToken');
 
   const [formData, setFormData] = useState({
-    email: "",
-    first_name: "",
-    last_name: "",
+    email: '',
+    first_name: '',
+    last_name: '',
   });
   const [originalData, setOriginalData] = useState({});
   const [profileImage, setProfileImage] = useState(null);
@@ -29,14 +29,14 @@ const ProfileSection = () => {
   useEffect(() => {
     if (userData) {
       setFormData({
-        email: userData.email || "",
-        first_name: userData.first_name || "",
-        last_name: userData.last_name || "",
+        email: userData.email || '',
+        first_name: userData.first_name || '',
+        last_name: userData.last_name || '',
       });
       setOriginalData({
-        first_name: userData.first_name || "",
-        last_name: userData.last_name || "",
-        image: userData.image || "",
+        first_name: userData.first_name || '',
+        last_name: userData.last_name || '',
+        image: userData.image || '',
       });
       setImagePreview(
         userData.image ? constructDownloadUrl(userData.image) : UserLogo
@@ -46,7 +46,7 @@ const ProfileSection = () => {
 
   useEffect(() => {
     if (!token) {
-      navigate("/");
+      navigate('/');
     } else {
       getLoggedInUser();
     }
@@ -65,21 +65,31 @@ const ProfileSection = () => {
     }
   };
 
+  // const constructDownloadUrl = (outputPath) => {
+  //   if (!outputPath) return '#';
+  //   const trimmedPath = outputPath.replace('./', '');
+  //   const timestamp = new Date().getTime();
+  //   return `${API_BASE_URL}/${trimmedPath}`;
+  // };
+
   const constructDownloadUrl = (outputPath) => {
-    if (!outputPath) return "#";
-    const trimmedPath = outputPath.replace("./", "");
-    const timestamp = new Date().getTime();
-    return `${API_BASE_URL}/${trimmedPath}`;
+    if (!outputPath) return '#';
+
+    // Remove the leading './' and any unnecessary parts of the path
+    const trimmedPath = outputPath.replace('./', '');
+
+    // Construct the full URL using the AWS S3 bucket base URL
+    return `https://video-summarizer-dev.s3.ap-south-1.amazonaws.com/${trimmedPath}`;
   };
 
   const getLoggedInUser = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/v1/users/me`, {
-        method: "GET",
+        method: 'GET',
         headers: {
           Token: `${token}`,
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "69420",
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': '69420',
         },
       });
 
@@ -90,16 +100,16 @@ const ProfileSection = () => {
           data.image ? constructDownloadUrl(data.image) : UserLogo
         );
       } else if (response.status === 401) {
-        console.warn("Unauthorized access. Redirecting to login.");
+        console.warn('Unauthorized access. Redirecting to login.');
         localStorage.clear();
         location.reload();
       } else if (response.status === 404) {
-        console.warn("User not found.");
+        console.warn('User not found.');
       } else {
-        console.warn("Failed to fetch user data. Status:", response.status);
+        console.warn('Failed to fetch user data. Status:', response.status);
       }
     } catch (error) {
-      console.error("Error fetching user:", error);
+      console.error('Error fetching user:', error);
     }
   };
 
@@ -107,31 +117,45 @@ const ProfileSection = () => {
     e.preventDefault();
     setLoading(true);
 
-    const updatedFields = {};
-    if (formData.first_name !== originalData.first_name) {
-      updatedFields.first_name = formData.first_name;
+    const formDataToSubmit = new FormData();
+    let hasUpdates = false;
+
+    // Append only updated fields
+    if (
+      formData.first_name &&
+      formData.first_name !== originalData.first_name
+    ) {
+      formDataToSubmit.append('first_name', formData.first_name);
+      hasUpdates = true;
     }
-    if (formData.last_name !== originalData.last_name) {
-      updatedFields.last_name = formData.last_name;
+    if (formData.last_name && formData.last_name !== originalData.last_name) {
+      formDataToSubmit.append('last_name', formData.last_name);
+      hasUpdates = true;
+    }
+    if (profileImage) {
+      formDataToSubmit.append('image', profileImage);
+      hasUpdates = true;
     }
 
-    const formDataToSubmit = new FormData();
-    if (profileImage) {
-      formDataToSubmit.append("image", profileImage);
+    // Prevent API call if no updates
+    if (!hasUpdates) {
+      toastRef.current.addToast('No changes detected.', 3000);
+      setLoading(false);
+      return;
     }
 
     try {
-      if (Object.keys(updatedFields).length > 0 || profileImage) {
-        const result = await uploadProfile(
-          formDataToSubmit,
-          updatedFields.first_name || "",
-          updatedFields.last_name || ""
-        );
-        toastRef.current.addToast("Profile updated successfully!", 3000);
-        await getLoggedInUser();
-      }
+      // Ensure `uploadProfile` only expects `formDataToSubmit`
+      const result = await uploadProfile(formDataToSubmit);
+
+      toastRef.current.addToast('Profile updated successfully!', 3000);
+      await getLoggedInUser();
     } catch (error) {
-      console.error(error);
+      console.error('❌ Profile update failed:', error);
+      toastRef.current.addToast(
+        '⚠️ Profile update failed. Please try again.',
+        3000
+      );
     } finally {
       setLoading(false);
     }
@@ -159,7 +183,7 @@ const ProfileSection = () => {
               id="profileImage"
               accept="image/*"
               onChange={handleImageChange}
-              style={{ display: "none" }}
+              style={{ display: 'none' }}
             />
             <img
               src={imagePreview || UserLogo}
@@ -168,7 +192,7 @@ const ProfileSection = () => {
             />
             <div
               className="camera-icon"
-              onClick={() => document.getElementById("profileImage").click()}
+              onClick={() => document.getElementById('profileImage').click()}
             >
               <FaCamera />
             </div>
@@ -212,7 +236,7 @@ const ProfileSection = () => {
           className="submit-btn"
           disabled={loading || isButtonDisabled()}
         >
-          {loading ? "Updating..." : "Update"}
+          {loading ? 'Updating...' : 'Update'}
         </button>
       </form>
     </div>

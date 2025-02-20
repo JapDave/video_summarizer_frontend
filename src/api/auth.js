@@ -65,44 +65,43 @@ export const updateUserStatus = async (id, is_blocked) => {
 
 export const upLoadedVideo = async (data) => {
   try {
-    // Make the API request
     const accesstoken = localStorage.getItem('accessToken');
     const response = await axios.post(
       `${API_BASE_URL}/api/v1/summarize-video/video`,
       data,
       {
         headers: {
-          'Content-Type': 'multipart/form-data', // Necessary for file uploads
+          'Content-Type': 'multipart/form-data',
           token: `${accesstoken}`,
         },
       }
     );
 
-    console.log('File uploaded successfully:', response.data);
+    console.log('📤 File uploaded successfully:', response.data);
+    return response; // ✅ Ensure response is returned
   } catch (error) {
-    console.error('Error uploading file:', error);
+    console.error('❌ Error uploading file:', error);
+    throw error; // ✅ Ensure error is properly thrown
   }
 };
 
-export const uploadProfile = async (data, firstName, lastName) => {
+export const uploadProfile = async (data) => {
   try {
     const accessToken = localStorage.getItem('accessToken');
 
-    const url = `${API_BASE_URL}/api/v1/users/update-profile?first_name=${encodeURIComponent(
-      firstName
-    )}&last_name=${encodeURIComponent(lastName)}`;
+    const url = `${API_BASE_URL}/api/v1/users/update-profile`;
 
     const response = await axios.post(url, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
-        token: `${accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
-    console.log('Profile image uploaded successfully:', response.data);
+    console.log('✅ Profile updated successfully:', response.data);
     return response.data;
   } catch (error) {
-    console.error('Error uploading profile image:', error);
+    console.error('❌ Error uploading profile:', error);
     throw error;
   }
 };

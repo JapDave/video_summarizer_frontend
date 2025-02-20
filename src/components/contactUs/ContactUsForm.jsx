@@ -1,12 +1,12 @@
 // src/components/ContactForm.jsx
-import React, { useState } from "react";
-import "./ContactUsForm.scss";
+import React, { useState } from 'react';
+import './ContactUsForm.scss';
 
 const ContactUSForm = () => {
   const [formData, setFormData] = useState({
-    email: "",
-    subject: "",
-    message: "",
+    email: '',
+    subject: '',
+    message: '',
   });
 
   const handleChange = (e) => {
@@ -17,11 +17,11 @@ const ContactUSForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission (e.g., send data to an API)
-    console.log("Form Data Submitted:", formData);
+    console.log('Form Data Submitted:', formData);
   };
 
   return (
-    <div className="contact-form-container">
+    <div className="contact-form-container mt-16">
       <h1>Contact Us</h1>
       <p>
         Got a technical issue? Want to send feedback about a beta feature? Need

@@ -19,7 +19,7 @@ const AddPlanForm = ({ setShowModal, getPlansHandler }) => {
   const [videoLength, setVideoLength] = useState(0);
   const [faceDetection, setFaceDetection] = useState(3);
   const [transitions, setTransitions] = useState('0');
-  const [watermarking, setWatermarking] = useState(false);
+  const [watermarking, setWatermarking] = useState(true);
   const [chunkSize, setChunkSize] = useState('0');
   const [model, setModel] = useState('0');
   const [outputResolution, setOutputResolution] = useState('480p');

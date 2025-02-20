@@ -1,65 +1,121 @@
-import React, { useRef, useState } from "react";
-import ReCAPTCHA from "react-google-recaptcha";
-import { useSelector, useDispatch } from "react-redux";
-import { setIsAdmin } from "../../redux/slices/adminSlice";
-import "./SearchSection.scss";
+import React, { useRef, useState } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
+import { useSelector, useDispatch } from 'react-redux';
+import { setIsAdmin } from '../../redux/slices/adminSlice';
+import './SearchSection.scss';
 import {
   clipboardIcon,
   downloadIcon,
   thunderIcon,
-} from "../../assets/images/Images";
-import { authAPI } from "../../api";
-import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
-import CustomLoader from "../customLoader/CustomLoader";
-import ToastContainer from "../customToaster/ToastContainer";
+} from '../../assets/images/Images';
+import { authAPI } from '../../api';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import CustomLoader from '../customLoader/CustomLoader';
+import ToastContainer from '../customToaster/ToastContainer';
+import { Switch } from 'antd';
 
 const SearchSection = () => {
   const toastRef = useRef();
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState("");
+  const [fileName, setFileName] = useState('');
   const [dragging, setDragging] = useState(false);
   const [loader, setLoader] = useState(false);
   const [isCaptchaValid, setCaptchaValid] = useState(false);
-  const [videoURL, setVideoURL] = useState("");
+  const [videoURL, setVideoURL] = useState('');
+  const [faceDetections, setFaceDetection] = useState(0);
+  const [transitions, setTransitions] = useState(0);
+  const [watermarkNeeded, setWatermarkNeeded] = useState(true);
+  const [chunkSize, setChunkSize] = useState(0);
   const isAdmin = useSelector((state) => state.admin.isAdmin); // Access the isAdmin state
   const dispatch = useDispatch();
 
   const checkTokenAndNavigate = () => {
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem('accessToken');
     if (!token) {
-      navigate("/login");
+      navigate('/login');
       return false;
     }
     return true;
   };
 
+  // const handleFileChange = async () => {
+  //   if (!checkTokenAndNavigate()) return;
+
+  //   if (file) {
+  //     setLoader(true);
+  //     const formData = new FormData();
+  //     formData.append('video', file);
+  //     formData.append('face_detections', faceDetections);
+  //     formData.append('transitions', transitions);
+  //     formData.append('watermark_needed', watermarkNeeded);
+  //     formData.append('chunk_size', chunkSize);
+
+  //     try {
+  //       const response = await authAPI.upLoadedVideo(formData);
+  //       // toastRef.current.addToast("Video upoaded successfully!", 3000);
+  //       console.log('reee', response);
+  //       // toast.success(response.detail);
+  //     } catch (error) {
+  //       console.log('handle post upload', error);
+  //       toastRef.current.addToast(error.response?.data?.detail, 3000);
+  //       const errorMessage = error.response?.data?.detail || 'Upload failed!';
+  //       // toast.error(errorMessage);
+  //     } finally {
+  //       setLoader(false);
+  //       setFile(null);
+  //       setFileName('');
+  //     }
+  //   }
+  // };
   const handleFileChange = async () => {
     if (!checkTokenAndNavigate()) return;
 
-    if (file) {
-      setLoader(true);
-      const formData = new FormData();
-      formData.append("video", file); // 'file' is the key expected by backend
+    if (!file) {
+      toastRef.current?.addToast(
+        'Please select a file before uploading.',
+        3000
+      );
+      return;
+    }
 
-      try {
-        const response = await authAPI.upLoadedVideo(formData);
-        toastRef.current.addToast("Video upoaded successfully!", 3000);
-        console.log("reee", response);
-        // toast.success(response.detail);
-      } catch (error) {
-        console.log("handle post upload", error);
-        toastRef.current.addToast(error.response?.data?.detail, 3000);
-        const errorMessage = error.response?.data?.detail || "Upload failed!";
-        // toast.error(errorMessage);
-      } finally {
-        setLoader(false);
-        setFile(null);
-        setFileName("");
+    setLoader(true);
+
+    const formData = new FormData();
+    formData.append('video', file);
+    formData.append('face_detections', faceDetections);
+    formData.append('transitions', transitions);
+    formData.append('watermark_needed', watermarkNeeded);
+    formData.append('chunk_size', chunkSize);
+
+    try {
+      console.log('📤 Sending upload request:', formData);
+      const response = await authAPI.upLoadedVideo(formData);
+      console.log('📥 Received API response:', response);
+
+      if (response?.status === 200 || response?.status === 201) {
+        toastRef.current?.addToast('✅ Video uploaded successfully!', 3000);
+      } else {
+        const errorMessage =
+          response?.data?.detail || '⚠️ Upload failed. Please try again.';
+        toastRef.current?.addToast(errorMessage, 3000);
       }
+    } catch (error) {
+      console.error('❌ Upload failed:', error);
+
+      let errorMessage = '⚠️ Video upload failed. Please try again.';
+      if (error.response) {
+        errorMessage = error.response.data?.detail || error.message;
+      }
+      toastRef.current?.addToast(errorMessage, 3000);
+    } finally {
+      setLoader(false);
+      setFile(null);
+      setFileName('');
     }
   };
+
   const handleDragOver = (event) => {
     event.preventDefault();
     setDragging(true);
@@ -78,7 +134,7 @@ const SearchSection = () => {
       setFileName(selectedFile.name); // Set file name
     } else {
       setFile(null);
-      setFileName("");
+      setFileName('');
     }
   };
 
@@ -95,27 +151,31 @@ const SearchSection = () => {
     //   return;
     // }
 
-    if (videoURL !== "") {
+    if (videoURL !== '') {
       if (!checkTokenAndNavigate()) return;
 
       const urlReqData = {
         url: videoURL,
+        face_detections: faceDetections,
+        transitions: transitions,
+        watermark_needed: watermarkNeeded,
+        chunk_size: chunkSize,
       };
       try {
         setLoader(true);
         const response = await authAPI.YTVideo(urlReqData);
-        toastRef.current.addToast("Video upoaded successfully!", 3000);
-        navigate("/video-summarize");
-        setVideoURL("");
+        toastRef.current.addToast('Video upoaded successfully!', 3000);
+        navigate('/video-summarize');
+        setVideoURL('');
         // toast.success("Video URL posted successfully!");
       } catch (error) {
-        console.log("error-post-link", error);
+        console.log('error-post-link', error);
         toastRef.current.addToast(error.response?.data?.detail, 3000);
         const errorMessage =
-          error.response?.data?.detail || "Failed to post URL!";
+          error.response?.data?.detail || 'Failed to post URL!';
         setFile(null);
-        setFileName("");
-        setVideoURL("");
+        setFileName('');
+        setVideoURL('');
         // toast.error(errorMessage);
       } finally {
         setLoader(false);
@@ -155,6 +215,38 @@ const SearchSection = () => {
             <input
               type="text"
               className="header__input"
+              placeholder="Enter Face Detections"
+              onChange={(e) => setFaceDetection(e.target.value)}
+            />
+            <input
+              type="text"
+              className="header__input"
+              placeholder="Enter Transitions"
+              onChange={(e) => setTransitions(e.target.value)}
+            />
+          </div>
+          <div className="header__input-section">
+            <input
+              type="text"
+              className="header__input"
+              placeholder="Enter Chunk Size"
+              onChange={(e) => setChunkSize(e.target.value)}
+            />
+            <div className="w-full flex flex-row justify-between border p-[12px] rounded-md gap-x-4 gap-y-2">
+              <label className="font-poppins font-[400] text-[#313131] text-base">
+                Watermark
+              </label>
+              <Switch
+                style={{ width: '10%' }}
+                checked={watermarkNeeded}
+                onChange={() => setWatermarkNeeded((prev) => !prev)}
+              />
+            </div>
+          </div>
+          <div className="header__input-section justify-between">
+            <input
+              type="text"
+              className="header__input w-full"
               placeholder="Paste YouTube Video URL here"
               value={videoURL}
               onChange={(e) => setVideoURL(e.target.value)}
@@ -176,14 +268,14 @@ const SearchSection = () => {
           <p className="header__or">Or</p>
           <div
             className={`header__file-upload-container ${
-              dragging ? "dragging" : ""
+              dragging ? 'dragging' : ''
             }`}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
             <input
-              key={file ? file.name : "file-input"}
+              key={file ? file.name : 'file-input'}
               type="file"
               id="file-input"
               accept="video/mp4"
